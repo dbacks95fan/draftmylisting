@@ -1,0 +1,13 @@
+# Copyright (c) 2026 DPSystems, LLC.
+# Keeps local secrets and machine-specific files out of this public repository.
+
+# Secrets: eBay API keys and tokens live only in local .env files.
+.env
+.env.*
+!.env.example
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

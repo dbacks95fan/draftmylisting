@@ -1,0 +1,4 @@
+# Copyright (c) 2026 DPSystems, LLC.
+# Normalizes line endings to LF so formatters and checks behave the same on Windows and Linux.
+
+* text=auto eol=lf
