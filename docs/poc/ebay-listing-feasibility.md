@@ -78,6 +78,13 @@ constraints in the SRS (`docs/srs.md`).
 
 ## Open items found during the PoC
 
+- **Accepted dev-only vulnerability (2026-11-10, Sobe's decision):** `npm audit`
+  reports 10 moderate findings, all from `minimatch` 10.2.6
+  ([GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249),
+  denial of service via crafted glob patterns), pulled in by `eslint` 10.13.0
+  and `typescript-eslint` 8.72.1. Dev tooling only; the only globs it reads are
+  our own config. Update when both packages ship on `minimatch` ≥ 11.0.1.
+
 - How the PoC gets a temporary HTTPS address for question 8 (NAS reverse
   proxy or a short-lived tunnel) — decide when we reach it.
 - Fallback design if ChatGPT moves to a plan where custom MCP is read-only.

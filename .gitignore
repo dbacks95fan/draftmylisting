@@ -6,6 +6,9 @@
 .env.*
 !.env.example
 
+# Installed packages
+node_modules/
+
 # OS and editor files
 .DS_Store
 Thumbs.db
