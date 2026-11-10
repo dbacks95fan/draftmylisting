@@ -40,7 +40,7 @@ constraints in the SRS (`docs/srs.md`).
 
 | # | Question | Result | Evidence |
 |---|---|---|---|
-| 1 | Is the GraphQL Listing API (`sell.listing` scope) open to a normal developer account? Is there a sandbox? | ⏳ in progress | 2026-11-10: sandbox keyset is valid (application token for base `api_scope` issued, 7200 s). Application tokens are refused (`invalid_scope`) for `sell.listing`, but equally for `sell.inventory`, `sell.listing.read`, and `commerce.taxonomy.readonly`, so the refusal does not show `sell.listing` is unavailable: sell scopes need a **user** token. Next: user-consent token for a sandbox test user. |
+| 1 | Is the GraphQL Listing API (`sell.listing` scope) open to a normal developer account? Is there a sandbox? | ⏳ in progress | 2026-11-10: sandbox keyset is valid (application token for base `api_scope` issued, 7200 s). Application tokens are refused (`invalid_scope`) for `sell.listing`, but equally for `sell.inventory`, `sell.listing.read`, and `commerce.taxonomy.readonly`, so the refusal does not show `sell.listing` is unavailable: sell scopes need a **user** token. 2026-11-10: the sandbox keyset's OAuth scope list (developer portal, Authorization Code grant) **includes `sell.listing`** ("View and manage eBay listings") and `sell.listing.read`; also `sell.inventory` and `sell.item.draft`. Client Credentials list includes `buy.marketplace.insights` (historical sales). Next: obtain a sandbox user token and make one real call. |
 | 2 | Does `createListing` in `VALIDATE` mode return the full listing plus estimated fees? | ⏳ pending | |
 | 3 | Does `startAt` = now + 24h create a `SCHEDULED` listing that can be previewed in Seller Hub? | ⏳ pending | |
 | 4 | Can a scheduled listing be edited and cancelled in Seller Hub? Does scheduling cost anything? | ⏳ pending | |
@@ -64,4 +64,6 @@ constraints in the SRS (`docs/srs.md`).
   proxy or a short-lived tunnel) — decide when we reach it.
 - Fallback design if ChatGPT moves to a plan where custom MCP is read-only.
 - Sold-price data: Marketplace Insights API is limited release; eBay's MCP
-  server can search active listings only (to confirm in question 7).
+  server can search active listings only (to confirm in question 7). The
+  sandbox keyset lists `buy.marketplace.insights` under Client Credentials, so
+  sold-price data may be reachable; confirm on the production keyset.
