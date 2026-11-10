@@ -11,6 +11,7 @@ export interface EbayConfig {
   tokenUrl: string;
   graphqlUrl: string;
   restBaseUrl: string;
+  mediaBaseUrl: string;
 }
 
 // Sandbox settings carry an EBAY_SANDBOX_ prefix; production settings use the
@@ -22,18 +23,21 @@ const SETTING_PREFIX: Record<EbayEnvironment, string> = {
 
 const ENDPOINTS: Record<
   EbayEnvironment,
-  Pick<EbayConfig, "tokenUrl" | "graphqlUrl" | "restBaseUrl">
+  Pick<EbayConfig, "tokenUrl" | "graphqlUrl" | "restBaseUrl" | "mediaBaseUrl">
 > = {
   sandbox: {
     tokenUrl: "https://api.sandbox.ebay.com/identity/v1/oauth2/token",
-    // The sandbox GraphQL host resolves in DNS; the PoC confirms it serves the Listing API.
+    // Confirmed 2026-11-10: the sandbox host serves the Listing API's createListing mutation.
     graphqlUrl: "https://graphqlapi.sandbox.ebay.com/graphql",
     restBaseUrl: "https://api.sandbox.ebay.com",
+    // Media API lives on the apim host, per eBay's createImageFromFile docs.
+    mediaBaseUrl: "https://apim.sandbox.ebay.com",
   },
   production: {
     tokenUrl: "https://api.ebay.com/identity/v1/oauth2/token",
     graphqlUrl: "https://graphqlapi.ebay.com/graphql",
     restBaseUrl: "https://api.ebay.com",
+    mediaBaseUrl: "https://apim.ebay.com",
   },
 };
 

@@ -15,7 +15,7 @@ const HOUR_MS = 60 * 60 * 1000;
 function executeAt(startAt: string | undefined): ListingSafetyFields {
   return {
     options: { operationMode: "EXECUTE" },
-    listingTerms: { lifecycleTerms: { startAt } },
+    listingTerms: { lifecycleTerms: { scheduledToStartAt: startAt } },
   };
 }
 

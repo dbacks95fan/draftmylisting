@@ -1,7 +1,7 @@
 // Copyright (c) 2026 DPSystems, LLC.
 // PoC question 2: does createListing in VALIDATE mode check a whole listing without creating it?
 //
-// Run: node spikes/ebay-listing/q2-validate-listing.ts
+// Run: node spikes/ebay-listing/q2-validate-listing.ts <eBay-hosted image URL>
 // Reads eBay settings from the file named by DRAFTMYLISTING_ENV_FILE. Sandbox only.
 
 import { randomUUID } from "node:crypto";
@@ -23,6 +23,8 @@ mutation CreateListing($input: CreateListingInput!) {
         items { itemTerms { pricingTerms { fixedPrice { original { value currency } } } } }
         listingTerms { listingFormat lifecycleTerms { listingDurationInDays startAt } }
       }
+      listingFees { listingFeeType feeAmount { value currency } promotionalDiscount { value currency } }
+      warnings { warningCode warningMessage }
     }
     ... on CreateListingValidationError {
       errorMessage
@@ -33,14 +35,17 @@ mutation CreateListing($input: CreateListingInput!) {
   }
 }`;
 
-// Asks the schema which fields a validation success carries, to find where fee estimates live.
-const VALIDATION_SUCCESS_FIELDS = `
-query { __type(name: "CreateListingValidationSuccess") { fields { name type { name kind } } } }`;
-
 const envFile = process.env.DRAFTMYLISTING_ENV_FILE;
 if (envFile === undefined || envFile === "") {
   throw new Error(
     "Set DRAFTMYLISTING_ENV_FILE to the settings file that holds your eBay keys.",
+  );
+}
+
+const imageUrl = process.argv[2];
+if (imageUrl === undefined) {
+  throw new Error(
+    "Pass an eBay-hosted photo URL: run q6-upload-photo.ts first and use its imageUrl.",
   );
 }
 
@@ -51,7 +56,8 @@ const startAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 // with VALIDATE set explicitly and a start time 24 hours out.
 const input = {
   sku: `dml-poc-${Date.now()}`,
-  idempotencyKey: randomUUID(),
+  // eBay requires exactly 32 hex characters (0-9, A-F): a UUID without its dashes.
+  idempotencyKey: randomUUID().replaceAll("-", "").toUpperCase(),
   marketplace: "EBAY_US",
   product: {
     title: "DraftMyListing PoC Sneakers Men's Size 10",
@@ -64,6 +70,9 @@ const input = {
       { name: "Color", values: ["Orange"] },
       { name: "Department", values: ["Men's"] },
     ],
+    // An eBay-hosted photo URL from q6-upload-photo.ts. eBay's sample placeholder
+    // URL made the sandbox return LSTNG_INTERNAL_SERVER_ERROR.
+    imageUrls: [imageUrl],
     itemCondition: { conditionId: "1000" },
   },
   listingItems: {
@@ -78,7 +87,11 @@ const input = {
   },
   listingTerms: {
     listingFormat: "FIXED_PRICE",
-    lifecycleTerms: { listingDurationInDays: "GTC", startAt },
+    // Input field is scheduledToStartAt; the response reports it back as startAt.
+    lifecycleTerms: {
+      listingDurationInDays: "GTC",
+      scheduledToStartAt: startAt,
+    },
     fulfillmentTerms: {
       packageSpecifications: {
         measurementSystem: "ENGLISH",
@@ -123,11 +136,3 @@ const result = await postGraphql(config, accessToken, VALIDATE_MUTATION, {
 });
 console.log("createListing (VALIDATE) response:");
 console.log(JSON.stringify(result, null, 2));
-
-const schema = await postGraphql(
-  config,
-  accessToken,
-  VALIDATION_SUCCESS_FIELDS,
-);
-console.log("CreateListingValidationSuccess fields (introspection):");
-console.log(JSON.stringify(schema, null, 2));

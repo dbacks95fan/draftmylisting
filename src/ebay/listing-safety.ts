@@ -4,7 +4,7 @@
 /** The only fields of a createListing input this check needs to read. */
 export interface ListingSafetyFields {
   options?: { operationMode?: string };
-  listingTerms?: { lifecycleTerms?: { startAt?: string } };
+  listingTerms?: { lifecycleTerms?: { scheduledToStartAt?: string } };
 }
 
 /**
@@ -35,21 +35,21 @@ export function assertSafeCreateListingInput(
     );
   }
 
-  const startAt = input.listingTerms?.lifecycleTerms?.startAt;
+  const startAt = input.listingTerms?.lifecycleTerms?.scheduledToStartAt;
   if (startAt === undefined) {
     throw new Error(
-      "createListing blocked: EXECUTE needs listingTerms.lifecycleTerms.startAt, or the listing goes live immediately.",
+      "createListing blocked: EXECUTE needs listingTerms.lifecycleTerms.scheduledToStartAt, or the listing goes live immediately.",
     );
   }
   const startMs = new Date(startAt).getTime();
   if (Number.isNaN(startMs)) {
     throw new Error(
-      `createListing blocked: startAt "${startAt}" is not a valid date-time.`,
+      `createListing blocked: scheduledToStartAt "${startAt}" is not a valid date-time.`,
     );
   }
   if (startMs - now.getTime() < MIN_SCHEDULE_LEAD_MS) {
     throw new Error(
-      `createListing blocked: startAt ${startAt} is less than 23 hours away. Schedule listings 24 hours ahead so there is time to review them.`,
+      `createListing blocked: scheduledToStartAt ${startAt} is less than 23 hours away. Schedule listings 24 hours ahead so there is time to review them.`,
     );
   }
 }
