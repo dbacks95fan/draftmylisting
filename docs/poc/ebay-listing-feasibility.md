@@ -40,7 +40,7 @@ constraints in the SRS (`docs/srs.md`).
 
 | # | Question | Result | Evidence |
 |---|---|---|---|
-| 1 | Is the GraphQL Listing API (`sell.listing` scope) open to a normal developer account? Is there a sandbox? | ⏳ in progress | 2026-11-10: sandbox keyset is valid (application token for base `api_scope` issued, 7200 s). Application tokens are refused (`invalid_scope`) for `sell.listing`, but equally for `sell.inventory`, `sell.listing.read`, and `commerce.taxonomy.readonly`, so the refusal does not show `sell.listing` is unavailable: sell scopes need a **user** token. 2026-11-10: the sandbox keyset's OAuth scope list (developer portal, Authorization Code grant) **includes `sell.listing`** ("View and manage eBay listings") and `sell.listing.read`; also `sell.inventory` and `sell.item.draft`. Client Credentials list includes `buy.marketplace.insights` (historical sales). Next: obtain a sandbox user token and make one real call. |
+| 1 | Is the GraphQL Listing API (`sell.listing` scope) open to a normal developer account? Is there a sandbox? | ⏳ in progress | 2026-11-10: sandbox keyset is valid (application token for base `api_scope` issued, 7200 s). Application tokens are refused (`invalid_scope`) for `sell.listing`, but equally for `sell.inventory`, `sell.listing.read`, and `commerce.taxonomy.readonly`, so the refusal does not show `sell.listing` is unavailable: sell scopes need a **user** token. 2026-11-10: the sandbox keyset's OAuth scope list (developer portal, Authorization Code grant) **includes `sell.listing`** ("View and manage eBay listings") and `sell.listing.read`; also `sell.inventory` and `sell.item.draft`. Client Credentials list includes `buy.marketplace.insights` (historical sales). 2026-11-10: sandbox **user** token obtained via the authorization code flow with `api_scope`, `sell.listing`, `sell.listing.read`, `sell.inventory`: access token 7200 s, refresh token ~548 days; a read-only seller call (`GET /sell/inventory/v1/inventory_item`) succeeded where the portal's quick token got 403; refresh grant issues new access tokens. Next: one real GraphQL Listing API call (`createListing` in `VALIDATE`). |
 | 2 | Does `createListing` in `VALIDATE` mode return the full listing plus estimated fees? | ⏳ pending | |
 | 3 | Does `startAt` = now + 24h create a `SCHEDULED` listing that can be previewed in Seller Hub? | ⏳ pending | |
 | 4 | Can a scheduled listing be edited and cancelled in Seller Hub? Does scheduling cost anything? | ⏳ pending | |
@@ -57,6 +57,24 @@ constraints in the SRS (`docs/srs.md`).
 | Inventory API unpublished offers | Not visible in Seller Hub until published; Inventory-API listings cannot be edited in Seller Hub | eBay developer forum (staff); Inventory API overview |
 | Seller Hub "Create drafts" CSV template | Drafts no longer required; manual upload | eBay Seller Hub Reports help |
 | Trading API `VerifyAddItem` | Legacy; replaced by GraphQL `createListing` in `VALIDATE` mode | eBay `public-api-migration-skills`, `mode-verify-to-validate.md` |
+
+## eBay OAuth lessons (for the real server)
+
+- The developer portal's quick "sign in" button returns only a 2-hour access
+  token, with default scopes. A refresh token comes only from the full
+  authorization code flow.
+- `redirect_uri` must be the **RuName** (a short alias, e.g.
+  `Name-Name-App-xxxxx`), not the portal's sign-in link that contains it.
+  Sending the link lands on `auth2.sandbox.ebay.com/oauth2/errorOauth`.
+- With the RuName's "auth accepted URL" left at eBay's default page, the
+  browser lands on `ThirdPartyAuthSucessFailure?isAuthSuccessful=true` with
+  **no `code` and no `state`**. The accepted URL must point to a page we
+  control; the code arrives as `?code=…&state=…&expires_in=299`.
+- The code is URL-encoded (`%5E`, `%23`) and expires in ~5 minutes. Exchange
+  it immediately and automatically. One manual copy-and-paste attempt failed
+  with `invalid_grant`; an automatic exchange 133 s after opening the link
+  succeeded. Expiry is the likely cause, but it was not proven.
+- Always send and verify `state`. It caught the default-page case above.
 
 ## Open items found during the PoC
 
