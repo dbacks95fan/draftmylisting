@@ -1,7 +1,8 @@
 // Copyright (c) 2026 DPSystems, LLC.
 // PoC question 2: does createListing in VALIDATE mode check a whole listing without creating it?
 //
-// Run: node spikes/ebay-listing/q2-validate-listing.ts <eBay-hosted image URL>
+// Run: node spikes/ebay-listing/q2-validate-listing.ts <eBay-hosted image URL> [minimal]
+// "minimal" drops the schedule, package size, and return terms to isolate failures.
 // Reads eBay settings from the file named by DRAFTMYLISTING_ENV_FILE. Sandbox only.
 
 import { randomUUID } from "node:crypto";
@@ -43,6 +44,7 @@ if (envFile === undefined || envFile === "") {
 }
 
 const imageUrl = process.argv[2];
+const minimal = process.argv[3] === "minimal";
 if (imageUrl === undefined) {
   throw new Error(
     "Pass an eBay-hosted photo URL: run q6-upload-photo.ts first and use its imageUrl.",
@@ -88,16 +90,19 @@ const input = {
   listingTerms: {
     listingFormat: "FIXED_PRICE",
     // Input field is scheduledToStartAt; the response reports it back as startAt.
-    lifecycleTerms: {
-      listingDurationInDays: "GTC",
-      scheduledToStartAt: startAt,
-    },
+    lifecycleTerms: minimal
+      ? { listingDurationInDays: "GTC" }
+      : { listingDurationInDays: "GTC", scheduledToStartAt: startAt },
     fulfillmentTerms: {
-      packageSpecifications: {
-        measurementSystem: "ENGLISH",
-        packageDimensions: { length: 12, width: 9, height: 3 },
-        packageWeight: { majorUnit: 1, minorUnit: 5 },
-      },
+      ...(minimal
+        ? {}
+        : {
+            packageSpecifications: {
+              measurementSystem: "ENGLISH",
+              packageDimensions: { length: 12, width: 9, height: 3 },
+              packageWeight: { majorUnit: 1, minorUnit: 5 },
+            },
+          }),
       shippingTerms: {
         handlingTimeDuration: "DAYS_1",
         shippingServices: [
@@ -106,14 +111,18 @@ const input = {
         marketplaceShippingOptions: { costType: "FLAT" },
       },
     },
-    returnTerms: {
-      domesticReturnTerms: {
-        refundMethod: "MONEY_BACK",
-        returnAccepted: true,
-        returnDuration: "DAYS_30",
-        returnShipmentInvoicee: "BUYER",
-      },
-    },
+    ...(minimal
+      ? {}
+      : {
+          returnTerms: {
+            domesticReturnTerms: {
+              refundMethod: "MONEY_BACK",
+              returnAccepted: true,
+              returnDuration: "DAYS_30",
+              returnShipmentInvoicee: "BUYER",
+            },
+          },
+        }),
     itemLocation: {
       location: "Phoenix, AZ",
       postalCode: "85001",
