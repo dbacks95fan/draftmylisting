@@ -40,7 +40,7 @@ constraints in the SRS (`docs/srs.md`).
 
 | # | Question | Result | Evidence |
 |---|---|---|---|
-| 1 | Is the GraphQL Listing API (`sell.listing` scope) open to a normal developer account? Is there a sandbox? | ⏳ pending | |
+| 1 | Is the GraphQL Listing API (`sell.listing` scope) open to a normal developer account? Is there a sandbox? | ⏳ in progress | 2026-11-10: sandbox keyset is valid (application token for base `api_scope` issued, 7200 s). Application tokens are refused (`invalid_scope`) for `sell.listing`, but equally for `sell.inventory`, `sell.listing.read`, and `commerce.taxonomy.readonly`, so the refusal does not show `sell.listing` is unavailable: sell scopes need a **user** token. Next: user-consent token for a sandbox test user. |
 | 2 | Does `createListing` in `VALIDATE` mode return the full listing plus estimated fees? | ⏳ pending | |
 | 3 | Does `startAt` = now + 24h create a `SCHEDULED` listing that can be previewed in Seller Hub? | ⏳ pending | |
 | 4 | Can a scheduled listing be edited and cancelled in Seller Hub? Does scheduling cost anything? | ⏳ pending | |
