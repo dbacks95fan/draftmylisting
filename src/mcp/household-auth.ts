@@ -5,7 +5,10 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import type { Response } from "express";
 import type { OAuthRegisteredClientsStore } from "@modelcontextprotocol/sdk/server/auth/clients.js";
-import { InvalidGrantError } from "@modelcontextprotocol/sdk/server/auth/errors.js";
+import {
+  InvalidGrantError,
+  InvalidTokenError,
+} from "@modelcontextprotocol/sdk/server/auth/errors.js";
 import type {
   AuthorizationParams,
   OAuthServerProvider,
@@ -260,7 +263,9 @@ export class HouseholdAuthProvider implements OAuthServerProvider {
     const issued = this.accessTokens.get(token);
     if (issued === undefined || issued.expiresAt < this.now()) {
       this.accessTokens.delete(token);
-      throw new InvalidGrantError("Access token is invalid or expired.");
+      // InvalidTokenError makes the SDK answer 401, which tells the assistant to refresh or
+      // sign in again; other errors become 400 and would leave the connector stuck.
+      throw new InvalidTokenError("Access token is invalid or expired.");
     }
     return {
       token,

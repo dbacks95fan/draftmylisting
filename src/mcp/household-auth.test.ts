@@ -4,6 +4,7 @@
 import assert from "node:assert/strict";
 import { beforeEach, describe, it } from "node:test";
 import type { Response } from "express";
+import { InvalidTokenError } from "@modelcontextprotocol/sdk/server/auth/errors.js";
 import type { OAuthClientInformationFull } from "@modelcontextprotocol/sdk/shared/auth.js";
 import {
   HouseholdAuthProvider,
@@ -187,13 +188,20 @@ describe("HouseholdAuthProvider codes and passes", () => {
     await assert.rejects(provider.exchangeAuthorizationCode(CLIENT, code));
   });
 
-  it("refuses an access pass after it expires", async () => {
+  it("refuses an expired or made-up access pass as an invalid token (HTTP 401)", async () => {
     const tokens = await provider.exchangeAuthorizationCode(
       CLIENT,
       await signedInCode(),
     );
     clock += LIFETIMES_MS.accessToken + 1;
-    await assert.rejects(provider.verifyAccessToken(tokens.access_token));
+    await assert.rejects(
+      provider.verifyAccessToken(tokens.access_token),
+      InvalidTokenError,
+    );
+    await assert.rejects(
+      provider.verifyAccessToken("not-a-real-pass"),
+      InvalidTokenError,
+    );
   });
 
   it("rotates refresh tokens: the old one stops working", async () => {
