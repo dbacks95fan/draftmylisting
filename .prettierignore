@@ -1,0 +1,6 @@
+# Copyright (c) 2026 DPSystems, LLC.
+# Files Prettier skips: generated files and prose, which the project's rules exempt from formatting.
+
+package-lock.json
+*.md
+LICENSE
