@@ -93,6 +93,7 @@ constraints in the SRS (`docs/srs.md`).
   lists it. Pricing can use items currently for sale (Browse) unless eBay
   grants Marketplace Insights access.
 - eBay's MCP server (`@ebay/npm-public-api-mcp@1.2.0`) cannot fetch data today
-  (question 7). Decide whether to rely on it, wait for a fix, or give our own
-  server a few focused read tools (category suggestions, item aspects, search
-  for items for sale).
+  (question 7). **Decided 2026-11-19 (Sobe):** our own server gets three
+  focused read tools now (category suggestions, item aspects, search for items
+  for sale), using the app token only. eBay's server can replace them later if
+  eBay fixes it; recheck when a new version ships.
