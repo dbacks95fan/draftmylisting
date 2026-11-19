@@ -192,6 +192,17 @@ async function validateListing(
     result.data as { createListing?: { __typename?: string } } | undefined
   )?.createListing;
   const valid = outcome?.__typename === "CreateListingValidationSuccess";
+  // Logs eBay's verdict and violation codes (no listing content) to show what assistants sent.
+  const violations =
+    (
+      outcome as
+        | { violations?: { violationCode?: string; inputPath?: string }[] }
+        | undefined
+    )?.violations ?? [];
+  console.log(
+    `  result ${outcome?.__typename ?? "no createListing result"} title="${args.title}" category=${args.categoryId} price=${args.price} condition=${args.conditionId ?? "1000"} aspects=${args.aspects.map((a) => a.name).join("|")}` +
+      violations.map((v) => ` ${v.violationCode}@${v.inputPath}`).join(""),
+  );
   const summary = valid
     ? "eBay accepted this listing in a dry run. Nothing was created."
     : "eBay did not accept this listing. Nothing was created. Details below.";
