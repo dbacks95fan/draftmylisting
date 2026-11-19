@@ -6,7 +6,6 @@
 // Reads eBay settings from the file named by DRAFTMYLISTING_ENV_FILE. Uses the sandbox unless
 // DRAFTMYLISTING_EBAY_ENV=production; VALIDATE mode never creates a listing in either.
 
-import { randomUUID } from "node:crypto";
 import { getAccessToken, SCOPES } from "../../src/ebay/auth.ts";
 import {
   parseEbayEnvironment,
@@ -15,6 +14,7 @@ import {
 import { loadEnvFile } from "../../src/ebay/env-file.ts";
 import { postGraphql } from "../../src/ebay/graphql.ts";
 import { assertSafeCreateListingInput } from "../../src/ebay/listing-safety.ts";
+import { buildPocListingInput } from "./poc-listing-input.ts";
 
 const VALIDATE_MUTATION = `
 mutation CreateListing($input: CreateListingInput!) {
@@ -60,85 +60,19 @@ const config = resolveEbayConfig(
   parseEbayEnvironment(process.env.DRAFTMYLISTING_EBAY_ENV),
 );
 console.log(`eBay environment: ${config.environment}`);
-const startAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-// Based on eBay's own createListing example (public-api-migration-skills),
-// with VALIDATE set explicitly and a start time 24 hours out.
-const input = {
-  sku: `dml-poc-${Date.now()}`,
-  // eBay requires exactly 32 hex characters (0-9, A-F): a UUID without its dashes.
-  idempotencyKey: randomUUID().replaceAll("-", "").toUpperCase(),
-  marketplace: "EBAY_US",
-  product: {
-    title: "DraftMyListing PoC Sneakers Men's Size 10",
-    description:
-      "Proof-of-concept validation only. This listing is never created.",
-    categories: { primaryCategoryId: "15709" },
-    aspects: [
-      { name: "Brand", values: ["Unbranded"] },
-      { name: "US Shoe Size", values: ["10"] },
-      { name: "Color", values: ["Orange"] },
-      { name: "Department", values: ["Men's"] },
-    ],
-    // An eBay-hosted photo URL from q6-upload-photo.ts. eBay's sample placeholder
-    // URL made the sandbox return LSTNG_INTERNAL_SERVER_ERROR.
-    imageUrls: [imageUrl],
-    itemCondition: { conditionId: "1000" },
-  },
-  listingItems: {
-    items: [
-      {
-        itemTerms: {
-          availability: { quantityAvailable: 1 },
-          pricingTerms: { fixedPrice: 49.99 },
-        },
-      },
-    ],
-  },
-  listingTerms: {
-    listingFormat: "FIXED_PRICE",
-    // Input field is scheduledToStartAt; the response reports it back as startAt.
-    lifecycleTerms: minimal
-      ? { listingDurationInDays: "GTC" }
-      : { listingDurationInDays: "GTC", scheduledToStartAt: startAt },
-    fulfillmentTerms: {
-      ...(minimal
-        ? {}
-        : {
-            packageSpecifications: {
-              measurementSystem: "ENGLISH",
-              packageDimensions: { length: 12, width: 9, height: 3 },
-              packageWeight: { majorUnit: 1, minorUnit: 5 },
-            },
-          }),
-      shippingTerms: {
-        handlingTimeDuration: "DAYS_1",
-        shippingServices: [
-          { shippingCost: 10.0, rank: 1, shippingServiceCode: "USPSPriority" },
-        ],
-        marketplaceShippingOptions: { costType: "FLAT" },
-      },
-    },
-    ...(minimal
-      ? {}
-      : {
-          returnTerms: {
-            domesticReturnTerms: {
-              refundMethod: "MONEY_BACK",
-              returnAccepted: true,
-              returnDuration: "DAYS_30",
-              returnShipmentInvoicee: "BUYER",
-            },
-          },
-        }),
-    itemLocation: {
-      location: "Phoenix, AZ",
-      postalCode: "85001",
-      country: "US",
-    },
-  },
-  options: { operationMode: "VALIDATE" },
-};
+const input = buildPocListingInput({
+  imageUrl,
+  operationMode: "VALIDATE",
+  minimal,
+  ...(minimal
+    ? {}
+    : {
+        scheduledToStartAt: new Date(
+          Date.now() + 24 * 60 * 60 * 1000,
+        ).toISOString(),
+      }),
+});
 
 assertSafeCreateListingInput(input, new Date());
 
