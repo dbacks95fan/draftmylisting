@@ -5,6 +5,7 @@
 // Run:
 //   node spikes/ebay-listing/q3-scheduled-listing.ts create <eBay-hosted image URL>
 //   node spikes/ebay-listing/q3-scheduled-listing.ts status <listingId>
+//   node spikes/ebay-listing/q3-scheduled-listing.ts retitle <listingId>   (question 5)
 //   node spikes/ebay-listing/q3-scheduled-listing.ts end <listingId>
 // Reads eBay settings from DRAFTMYLISTING_ENV_FILE. "create" makes a REAL listing on the
 // account (scheduled 24 hours out); end it before its start time.
@@ -40,6 +41,12 @@ mutation CreateListing($input: CreateListingInput!) {
   }
 }`;
 
+// Title, photos, and price show whether an edit (Seller Hub or updateListing) took effect.
+const LISTING_READ_FIELDS = `
+  sellerProduct { title images { ebayImageUrl order } }
+  items { itemTerms { pricingTerms { fixedPrice { original { value currency } } } } }
+  listingTerms { ${LIFECYCLE_FIELDS} }`;
+
 const STATUS_QUERY = `
 query SellerListings($input: SellerListingsInput!) {
   sellerListings(input: $input) {
@@ -49,11 +56,11 @@ query SellerListings($input: SellerListingsInput!) {
         __typename
         ... on ListingSuccess {
           listingId
-          listing { sellerProduct { title } listingTerms { ${LIFECYCLE_FIELDS} } }
+          listing { ${LISTING_READ_FIELDS} }
         }
         ... on ListingPartialSuccess {
           listingId
-          listing { sellerProduct { title } listingTerms { ${LIFECYCLE_FIELDS} } }
+          listing { ${LISTING_READ_FIELDS} }
           errors { errorCode errorMessage }
         }
       }
@@ -79,8 +86,30 @@ mutation EndListing($input: EndListingInput!) {
   }
 }`;
 
+// Question 5: an edit through the API must keep the same listing ID (no relist).
+const UPDATE_MUTATION = `
+mutation UpdateListing($input: UpdateListingInput!) {
+  updateListing(input: $input) {
+    __typename
+    ... on UpdateListingSuccess {
+      listing { listingId sku sellerProduct { title } listingTerms { ${LIFECYCLE_FIELDS} } }
+      listingFees { listingFeeType feeAmount { value currency } promotionalDiscount { value currency } }
+      warnings { warningCode warningMessage }
+    }
+    ... on UpdateListingValidationError {
+      errorCode
+      errorMessage
+      violations { inputPath violationCode violationDescription }
+      warnings { warningCode warningMessage }
+    }
+  }
+}`;
+
+const EDITED_TITLE =
+  "DraftMyListing PoC Sneakers Men's Size 10 (edited by API)";
+
 const USAGE =
-  "Usage: q3-scheduled-listing.ts create <image URL> | status <listingId> | end <listingId>";
+  "Usage: q3-scheduled-listing.ts create <image URL> | status <listingId> | retitle <listingId> | end <listingId>";
 
 const envFile = process.env.DRAFTMYLISTING_ENV_FILE;
 if (envFile === undefined || envFile === "") {
@@ -122,6 +151,21 @@ switch (command) {
     query = STATUS_QUERY;
     variables = { input: { listings: [{ listingId: argument }] } };
     scopes = [SCOPES.publicData, SCOPES.listingRead];
+    break;
+  case "retitle":
+    query = UPDATE_MUTATION;
+    variables = {
+      input: {
+        listingIdentifier: { listingId: argument },
+        marketplace: "EBAY_US",
+        // Only the title is sent: eBay changes just the fields provided, and leaving out
+        // listingTerms keeps the scheduled start time untouched.
+        product: { title: EDITED_TITLE },
+        // updateListing also defaults to EXECUTE; say so explicitly.
+        options: { operationMode: "EXECUTE" },
+      },
+    };
+    scopes = [SCOPES.publicData, SCOPES.listing];
     break;
   case "end":
     query = END_MUTATION;
