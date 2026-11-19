@@ -3,7 +3,7 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { resolveEbayConfig } from "./config.ts";
+import { parseEbayEnvironment, resolveEbayConfig } from "./config.ts";
 
 const SETTINGS = new Map([
   ["EBAY_SANDBOX_APP_ID", "sandbox-id"],
@@ -13,6 +13,29 @@ const SETTINGS = new Map([
   ["EBAY_CLIENT_SECRET", "prod-secret"],
   ["EBAY_REFRESH_TOKEN", "prod-refresh"],
 ]);
+
+describe("parseEbayEnvironment", () => {
+  it("defaults to sandbox when unset or empty", () => {
+    assert.equal(parseEbayEnvironment(undefined), "sandbox");
+    assert.equal(parseEbayEnvironment(""), "sandbox");
+  });
+
+  it("accepts sandbox and production by name", () => {
+    assert.equal(parseEbayEnvironment("sandbox"), "sandbox");
+    assert.equal(parseEbayEnvironment("production"), "production");
+  });
+
+  it("rejects anything else instead of guessing", () => {
+    assert.throws(
+      () => parseEbayEnvironment("prod"),
+      /Unknown eBay environment/,
+    );
+    assert.throws(
+      () => parseEbayEnvironment("Production"),
+      /Unknown eBay environment/,
+    );
+  });
+});
 
 describe("resolveEbayConfig", () => {
   it("uses EBAY_SANDBOX_ settings and sandbox hosts for sandbox", () => {

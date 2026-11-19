@@ -41,6 +41,21 @@ const ENDPOINTS: Record<
   },
 };
 
+// Unset means sandbox, so production is only ever reached by asking for it by name.
+export function parseEbayEnvironment(
+  value: string | undefined,
+): EbayEnvironment {
+  if (value === undefined || value === "" || value === "sandbox") {
+    return "sandbox";
+  }
+  if (value === "production") {
+    return "production";
+  }
+  throw new Error(
+    `Unknown eBay environment "${value}". Use "sandbox" or "production".`,
+  );
+}
+
 export function resolveEbayConfig(
   settings: Map<string, string>,
   environment: EbayEnvironment,

@@ -3,11 +3,15 @@
 //
 // Run: node spikes/ebay-listing/q2-validate-listing.ts <eBay-hosted image URL> [minimal]
 // "minimal" drops the schedule, package size, and return terms to isolate failures.
-// Reads eBay settings from the file named by DRAFTMYLISTING_ENV_FILE. Sandbox only.
+// Reads eBay settings from the file named by DRAFTMYLISTING_ENV_FILE. Uses the sandbox unless
+// DRAFTMYLISTING_EBAY_ENV=production; VALIDATE mode never creates a listing in either.
 
 import { randomUUID } from "node:crypto";
 import { getAccessToken, SCOPES } from "../../src/ebay/auth.ts";
-import { resolveEbayConfig } from "../../src/ebay/config.ts";
+import {
+  parseEbayEnvironment,
+  resolveEbayConfig,
+} from "../../src/ebay/config.ts";
 import { loadEnvFile } from "../../src/ebay/env-file.ts";
 import { postGraphql } from "../../src/ebay/graphql.ts";
 import { assertSafeCreateListingInput } from "../../src/ebay/listing-safety.ts";
@@ -51,7 +55,11 @@ if (imageUrl === undefined) {
   );
 }
 
-const config = resolveEbayConfig(loadEnvFile(envFile), "sandbox");
+const config = resolveEbayConfig(
+  loadEnvFile(envFile),
+  parseEbayEnvironment(process.env.DRAFTMYLISTING_EBAY_ENV),
+);
+console.log(`eBay environment: ${config.environment}`);
 const startAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
 // Based on eBay's own createListing example (public-api-migration-skills),
