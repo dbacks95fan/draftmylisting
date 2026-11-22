@@ -28,6 +28,8 @@ import {
 } from "./validate-listing-tool.ts";
 
 const PORT = 8787;
+// Caps how many dry runs one run of this test server makes, even for signed-in callers.
+const MAX_TOOL_CALLS = 50;
 
 const envFile = process.env.DRAFTMYLISTING_ENV_FILE;
 if (envFile === undefined || envFile === "") {
@@ -116,6 +118,8 @@ const provider = new HouseholdAuthProvider(
   renderSignInPage,
 );
 
+let toolCalls = 0;
+
 const app = express();
 // cloudflared is the one proxy in front, so the client address comes from its header.
 app.set("trust proxy", 1);
@@ -197,6 +201,18 @@ app.post(
         return {
           content: [
             { type: "text", text: `Unknown tool: ${request.params.name}` },
+          ],
+          isError: true,
+        };
+      }
+      toolCalls += 1;
+      if (toolCalls > MAX_TOOL_CALLS) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "This test server's call limit is used up. Restart it to test more.",
+            },
           ],
           isError: true,
         };
