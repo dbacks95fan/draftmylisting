@@ -68,7 +68,7 @@ Confirmed by Sobe 2026-11-26.
 | Member | A household member (SRS 2.3). |
 | Draft | A listing being prepared that eBay has not yet scheduled. |
 | Scheduled listing | A listing eBay holds with a future start time (`SCHEDULED`); not visible to buyers. |
-| Review window | The 24 hours between scheduling and eBay starting the listing. |
+| Review window | The time between scheduling and eBay starting the listing: at least 24 hours, and up to about 48 hours because the start is moved so the auction ends at 10 p.m. Eastern (FR-SCHED-004). |
 | Item specifics | eBay's per-category attributes (for example Brand, Size, Color); some are required, some recommended. |
 | Condition | eBay's per-category condition value (for example New, Used). |
 | Seller Hub | eBay's own web tools for managing listings. |
@@ -233,6 +233,25 @@ once; members are not asked about them per item.
 | FR-TERMS-008 | When the item has been identified, the system shall estimate the packed item's dimensions and weight. | Must | Needed for calculated shipping. The member can correct them during the review window (FR-LIST). |
 | FR-TERMS-009 | If the item is too large or heavy for the household's shipping service, then the system shall ask the member how to handle it, such as local pickup only. | Must | |
 | FR-TERMS-010 | The system shall leave payment collection to eBay and shall not ask the member for payment settings. | Must | eBay manages payments. |
+
+### 3.5 Validation and scheduling (FR-SCHED)
+
+Confirmed by Sobe 2026-11-26. Listings are created automatically once the
+draft is complete; the review window is the check, and cancelling is safe.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-SCHED-001 | When a draft is complete, the system shall validate it with eBay without creating a listing. | Must | eBay `VALIDATE` mode, set explicitly (PoC safety rule 2). |
+| FR-SCHED-002 | When a draft passes eBay validation, the system shall create the listing on eBay without asking the member for confirmation. | Must | Sobe: automatic (G-1). |
+| FR-SCHED-003 | When the system creates a listing, the system shall create it as a scheduled listing with a start time at least 24 hours in the future. | Must | Never created live (PoC safety rule 1; G-3). |
+| FR-SCHED-004 | When the system sets a listing's start time, the system shall choose the earliest start time at least 24 hours away at which the 10-day auction ends at 10:00 p.m. US Eastern time. | Must | Sobe, 2026-11-26. Use Eastern time as observed on the end date (daylight saving aware). |
+| FR-SCHED-005 | When the system has created a listing, the system shall tell the member its title, starting price, Buy It Now price, start and end times in the member's time zone, and a link to view it on eBay. | Must | |
+| FR-SCHED-006 | When the system validates or creates a listing, the system shall tell the member eBay's fees for it, including fees that are zero or covered by a promotion. | Must | Sobe: always mention fees. PoC question 2 showed eBay returns fees at validation. |
+| FR-SCHED-007 | If eBay rejects a draft during validation, then the system shall correct every problem it can resolve from the photos, the note and earlier answers, and validate again. | Must | |
+| FR-SCHED-008 | If eBay rejects a draft for a problem the system cannot resolve, then the system shall ask the member about the specific detail eBay rejected. | Must | |
+| FR-SCHED-009 | If eBay returns a warning when validating or creating a listing, then the system shall tell the member the warning and continue. | Must | For example `LSTNG_PAYMENTS_ON_HOLD` (PoC question 2). |
+| FR-SCHED-010 | If eBay is unavailable or does not respond, then the system shall keep the draft and tell the member that it can be submitted again later. | Must | |
+| FR-SCHED-011 | If the system repeats a listing creation request, then the system shall not create a second listing for the same draft. | Must | eBay idempotency key (PoC question 2). |
 
 ## 4. Non-functional requirements
 
