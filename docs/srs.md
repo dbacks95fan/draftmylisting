@@ -193,6 +193,28 @@ says "the price", it means the starting price.
 | FR-PRICE-017 | The system shall create every listing without a reserve price. | Must | Reserve option declined (TBD-005). |
 | FR-PRICE-018 | The system shall create every auction with a duration of 10 days. | Must | Sobe, 2026-11-26. Cost of 10-day auctions: TBD-004. |
 
+### 3.3 Photos (FR-PHOTO)
+
+Confirmed by Sobe 2026-11-26. Once the listing exists on eBay and the member
+confirms they are done, DraftMyListing deletes the draft and its photos; the
+eBay listing is the source of truth from then on.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-PHOTO-001 | The system shall use only photos supplied by the member in a listing. | Must | No web or stock images (PoC decision, 2026-11-10). |
+| FR-PHOTO-002 | When a member supplies photos for a draft, the system shall upload every photo to the listing, up to eBay's maximum per listing. | Must | Believed to be 24; confirm during design. |
+| FR-PHOTO-003 | If a member supplies more photos than eBay allows, then the system shall tell the member and ask which photos to leave out. | Must | Added as the counterpart of FR-PHOTO-002. |
+| FR-PHOTO-004 | When the photos have been uploaded, the system shall put the best overall photo first, as the main photo, and order the rest as front, back, labels and tags, then flaws. | Must | |
+| FR-PHOTO-005 | When a member supplies a photo in a format eBay does not accept, such as iPhone HEIC, the system shall convert it to a format eBay accepts before uploading it. | Must | Open in the PoC (question 6). |
+| FR-PHOTO-006 | If a photo's longest side is under 500 pixels, then the system shall ask the member for a larger photo. | Must | eBay minimum; confirm during design. |
+| FR-PHOTO-007 | If a photo is blurry or too dark to show the item clearly, then the system shall ask the member to retake it. | Must | Sobe: retake, not just warn. |
+| FR-PHOTO-008 | If a photo shows private information, such as a face, an address or personal documents, then the system shall point it out to the member before uploading the photo. | Must | |
+| FR-PHOTO-009 | If a photo upload fails, then the system shall retry the upload. | Must | Retry limits: FR-ERR. |
+| FR-PHOTO-010 | If a photo upload still fails after retrying, then the system shall tell the member which photo was not uploaded. | Must | |
+| FR-PHOTO-011 | When the listing has been created on eBay, the system shall ask the member to confirm that they are done with the draft. | Must | Sobe, 2026-11-26. |
+| FR-PHOTO-012 | When the member confirms they are done with the draft, the system shall delete the draft and every copy of its photos that DraftMyListing holds. | Must | Photos remain on eBay with the listing. Activity history is settled in FR-AUDIT. |
+| FR-PHOTO-013 | While a listing exists on eBay, the system shall report its details from eBay, not from any copy DraftMyListing holds. | Must | eBay is the source of truth (PoC question 4). |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
