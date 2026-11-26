@@ -32,7 +32,28 @@ assistants are its **only** entry point (no web page or app of its own).
 
 ### 1.2 Product scope
 
-_Pending (Phase 1)._
+Confirmed by Sobe 2026-11-26.
+
+**In scope (first version):**
+
+- Drafting a listing from the member's photos and a few clarifying questions:
+  item identification, category, item specifics, condition, title and
+  description.
+- A price based on sold comparables (G-4; data source TBD-002).
+- Uploading the member's own photos to the listing.
+- Validating the listing with eBay, then scheduling it 24 hours out.
+- Reviewing, editing and safely cancelling a scheduled listing.
+- Use from Claude and ChatGPT, on phone and PC, with one sign-in per member.
+- Hosting on the household's NAS.
+
+**Out of scope (first version):**
+
+- Anything after a listing goes live: monitoring, relisting, buyer messages,
+  shipping, returns, sales reporting.
+- Auction format; listings are fixed price only.
+- Other marketplaces (for example Facebook Marketplace or Mercari).
+- More than one eBay account, or users outside the household.
+- A web page or app of DraftMyListing's own.
 
 ### 1.3 Definitions, acronyms and abbreviations
 
