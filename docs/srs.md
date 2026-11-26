@@ -54,10 +54,24 @@ Confirmed by Sobe 2026-11-26.
 - Other marketplaces (for example Facebook Marketplace or Mercari).
 - More than one eBay account, or users outside the household.
 - A web page or app of DraftMyListing's own.
+- Drafting several listings in one request. A member lists one item at a
+  time (Sobe, 2026-11-26).
 
 ### 1.3 Definitions, acronyms and abbreviations
 
-_Pending._
+| Term | Meaning |
+|---|---|
+| The system | DraftMyListing together with the assistant behavior its tools direct. Requirements about what "the system" asks or tells a member are met through the assistant, steered by DraftMyListing's tools and their descriptions. |
+| Assistant | The member's AI chat assistant: Claude or ChatGPT. |
+| Member | A household member (SRS 2.3). |
+| Draft | A listing being prepared that eBay has not yet scheduled. |
+| Scheduled listing | A listing eBay holds with a future start time (`SCHEDULED`); not visible to buyers. |
+| Review window | The 24 hours between scheduling and eBay starting the listing. |
+| Item specifics | eBay's per-category attributes (for example Brand, Size, Color); some are required, some recommended. |
+| Condition | eBay's per-category condition value (for example New, Used). |
+| Seller Hub | eBay's own web tools for managing listings. |
+| MCP | Model Context Protocol: how the assistants call DraftMyListing's tools. |
+| EARS | Easy Approach to Requirements Syntax, the pattern set used in section 3. |
 
 ### 1.4 References
 
@@ -67,7 +81,18 @@ _Pending._
 
 ### 2.1 Product perspective
 
-_Pending (Phase 1)._
+A new, self-contained product with no predecessor. It sits between the
+household's AI assistants and eBay:
+
+- Members talk only to their assistant (Claude or ChatGPT) on a phone or PC.
+- The assistant calls DraftMyListing's tools over the internet. Both assistants
+  make these calls from their own cloud, so DraftMyListing must be reachable
+  at a public HTTPS address and require sign-in (PoC question 8).
+- DraftMyListing calls eBay's APIs on the household's one seller account.
+- eBay, not DraftMyListing, is the source of truth for every listing: edits
+  made in Seller Hub must show up in what DraftMyListing reports (PoC
+  question 4).
+- It is hosted on the household's NAS, not on any one member's PC.
 
 ### 2.2 Goals and success metrics
 
@@ -108,7 +133,32 @@ _Pending._
 
 ## 3. Functional requirements
 
-_Pending (Phase 2)._
+Each requirement has a stable ID that is never reused. Priority is MoSCoW
+(Must, Should, Could, Won't). Status is `Proposed` until the SRS is finalized.
+
+### 3.1 Drafting from photos (FR-DRAFT)
+
+Confirmed by Sobe 2026-11-26. One item per listing, one listing at a time.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-DRAFT-001 | When a member sends one or more photos of an item, the system shall start drafting a listing for that item without requiring any typed text. | Must | G-1 |
+| FR-DRAFT-002 | When a member sends a note with the photos, the system shall use the details in the note in the draft. | Must | Optional note, e.g. "size 10, worn twice". |
+| FR-DRAFT-003 | When a member sends photos, the system shall identify the item's brand, model and distinguishing attributes from what the photos show, including any visible labels and tags. | Must | |
+| FR-DRAFT-004 | When a detail that eBay requires for the item's category cannot be determined from the photos, the note or earlier answers, the system shall ask the member for that detail or for a photo that shows it. | Must | Ask only what is needed (G-1). |
+| FR-DRAFT-005 | When the system needs more than one detail from the member, the system shall ask for all of them in a single message. | Must | Fewer round trips (G-1). |
+| FR-DRAFT-006 | When the system has assessed the photos, the system shall propose a condition for the item and list each visible flaw it found. | Must | |
+| FR-DRAFT-007 | When the system proposes a condition, the system shall ask the member to confirm it and shall present the other condition values eBay allows for the category. | Must | Sobe: assistant decides, member agrees or picks another. |
+| FR-DRAFT-008 | While the member has not confirmed or chosen the condition, the system shall not schedule the listing. | Must | |
+| FR-DRAFT-009 | When the item has been identified, the system shall choose its eBay category from eBay's category suggestions for the item. | Must | PoC question 7: Taxonomy suggestions work with an app token. |
+| FR-DRAFT-010 | When the category has been chosen, the system shall give a value to every item specific eBay marks as required for that category. | Must | G-2 |
+| FR-DRAFT-011 | When the category has been chosen, the system shall give a value to each item specific eBay recommends for that category whose value is known from the photos, the note or the member's answers. | Should | |
+| FR-DRAFT-012 | When the draft's details are complete, the system shall write a title of no more than 80 characters that names the item's key identifying details. | Must | eBay title limit: 80 characters. |
+| FR-DRAFT-013 | When the draft's details are complete, the system shall write a description that states the item's condition and every flaw identified. | Must | Honest listing; fewer returns. |
+| FR-DRAFT-014 | If the system is not confident of a detail's value, then the system shall ask the member for it instead of filling it with a guess. | Must | Wrong details cause returns and disputes. |
+| FR-DRAFT-015 | If the system cannot identify the item from the photos, then the system shall ask the member for the brand or model, or for a clearer photo of a label. | Must | |
+| FR-DRAFT-016 | If the photos show more than one item, then the system shall ask the member whether to list them together as one lot or to list one of them. | Must | One listing at a time either way. |
+| FR-DRAFT-017 | If the item appears to be prohibited or restricted on eBay, then the system shall tell the member why and shall not create a listing for it. | Must | For example alcohol, weapons, recalled goods. |
 
 ## 4. Non-functional requirements
 
