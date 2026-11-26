@@ -202,8 +202,8 @@ eBay listing is the source of truth from then on.
 | ID | Requirement | Priority | Notes |
 |---|---|---|---|
 | FR-PHOTO-001 | The system shall use only photos supplied by the member in a listing. | Must | No web or stock images (PoC decision, 2026-11-10). |
-| FR-PHOTO-002 | When a member supplies photos for a draft, the system shall upload every photo to the listing, up to eBay's maximum per listing. | Must | Believed to be 24; confirm during design. |
-| FR-PHOTO-003 | If a member supplies more photos than eBay allows, then the system shall tell the member and ask which photos to leave out. | Must | Added as the counterpart of FR-PHOTO-002. |
+| FR-PHOTO-002 | When a member supplies photos for a draft, the system shall upload every photo to the listing, up to 12 photos. | Must | Sobe, 2026-11-26: limit 12 (below eBay's maximum). |
+| FR-PHOTO-003 | If a member supplies more than 12 photos for a draft, then the system shall tell the member and ask which photos to leave out. | Must | Added as the counterpart of FR-PHOTO-002. |
 | FR-PHOTO-004 | When the photos have been uploaded, the system shall put the best overall photo first, as the main photo, and order the rest as front, back, labels and tags, then flaws. | Must | |
 | FR-PHOTO-005 | When a member supplies a photo in a format eBay does not accept, such as iPhone HEIC, the system shall convert it to a format eBay accepts before uploading it. | Must | Open in the PoC (question 6). |
 | FR-PHOTO-006 | If a photo's longest side is under 500 pixels, then the system shall ask the member for a larger photo. | Must | eBay minimum; confirm during design. |
@@ -214,6 +214,7 @@ eBay listing is the source of truth from then on.
 | FR-PHOTO-011 | When the listing has been created on eBay, the system shall ask the member to confirm that they are done with the draft. | Must | Sobe, 2026-11-26. |
 | FR-PHOTO-012 | When the member confirms they are done with the draft, the system shall delete the draft and every copy of its photos that DraftMyListing holds. | Must | Photos remain on eBay with the listing. Activity history is settled in FR-AUDIT. |
 | FR-PHOTO-013 | While a listing exists on eBay, the system shall report its details from eBay, not from any copy DraftMyListing holds. | Must | eBay is the source of truth (PoC question 4). |
+| FR-PHOTO-014 | If a member has not confirmed they are done with a draft 30 days after its listing was created on eBay, then the system shall delete all information and files related to that draft, including its photos. | Must | Sobe, 2026-11-26. |
 
 ## 4. Non-functional requirements
 
