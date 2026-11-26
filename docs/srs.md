@@ -41,7 +41,8 @@ Confirmed by Sobe 2026-11-26.
   description.
 - A price based on sold comparables (G-4; data source TBD-002).
 - Uploading the member's own photos to the listing.
-- Both listing formats: fixed price and auction (Sobe, 2026-11-26; TBD-003).
+- Auction format for every listing, with a Buy It Now price (Sobe, 2026-11-26;
+  TBD-003, TBD-005).
 - Validating the listing with eBay, then scheduling it 24 hours out.
 - Reviewing, editing and safely cancelling a scheduled listing.
 - Use from Claude and ChatGPT, on phone and PC, with one sign-in per member.
@@ -54,6 +55,7 @@ Confirmed by Sobe 2026-11-26.
 - Other marketplaces (for example Facebook Marketplace or Mercari).
 - More than one eBay account, or users outside the household.
 - A web page or app of DraftMyListing's own.
+- Fixed-price (Buy It Now only) listings. Every listing is an auction.
 - Drafting several listings in one request. A member lists one item at a
   time (Sobe, 2026-11-26).
 
@@ -100,7 +102,7 @@ Confirmed by Sobe 2026-11-26.
 
 | ID | Goal | Success metric |
 |---|---|---|
-| G-1 | **Least possible effort per listing.** Ideally a member only takes a few photos and answers a few clarifying questions; the assistant works out the rest from the photos. The less the member has to do, the better. | A member spends about **5 minutes** of their own time from first photo to a scheduled, complete listing. |
+| G-1 | **Least possible effort per listing.** Ideally a member only takes a few photos and answers a few clarifying questions; the assistant works out the rest from the photos. The less the member has to do, the better. **Guiding rule (Sobe, 2026-11-26):** the assistant fills in as much of the listing as it can. A member filling in or fixing a few fields afterwards (for example the price) is acceptable; the time saved comes from everything else being done. | A member spends about **5 minutes** of their own time from first photo to a scheduled, complete listing. |
 | G-2 | **Listings eBay accepts the first time.** | At least **95%** of listings pass eBay's validation on the first attempt, with every required item specific filled. |
 | G-3 | **Nothing goes live by surprise.** | **Zero** listings start without the full 24-hour review window, including through a cancel (the PoC's cancel started a listing early: question 4). |
 | G-4 | **Realistic prices.** The price comes from the assistant's research on similar items that have **sold**. | Every suggested price cites the sold comparables it is based on. Source of sold data: TBD-002. |
@@ -166,8 +168,9 @@ Confirmed by Sobe 2026-11-26. One item per listing, one listing at a time.
 
 Confirmed by Sobe 2026-11-26. The assistant sets the price on its own; the
 member sees it and can change it, during drafting or the review window.
-Settles TBD-002. Both fixed price and auction are in scope (TBD-003);
-auction-specific pricing is added below once its details are confirmed.
+Settles TBD-002. Every listing is an auction (TBD-003); the auction prices
+(starting price and Buy It Now) are being confirmed in TBD-005. Where this
+table says "the price", it means the auction price the comparables support.
 
 | ID | Requirement | Priority | Notes |
 |---|---|---|---|
@@ -199,5 +202,6 @@ _Pending (Phase 4)._
 |---|---|---|---|
 | TBD-001 | ChatGPT custom MCP connector support, especially in its phone app, is untested (PoC question 8). It is a stated must-have. | 2026-11-22 (PoC) | Open |
 | TBD-002 | Source of **sold**-item prices. Sobe (2026-11-26): the price comes from the assistant's research on similar items that have **sold**. eBay's sold-price API (Marketplace Insights) is limited release and granted per application. Checked 2026-11-26: neither the production keyset's Authorization Code scopes nor its Client Credentials scopes (only `api_scope` and `commerce.feedback.readonly`) include `buy.marketplace.insights`, matching the PoC's `invalid_scope` (question 7). **Decided (Sobe, 2026-11-26):** sold comparables from whatever the assistant can reach, with a clearly labeled fallback to for-sale prices (eBay Browse) when sold data is not enough; Sobe applies to eBay for Marketplace Insights access separately. Specified in FR-PRICE. | 2026-11-26 | Resolved 2026-11-26 |
-| TBD-003 | Listing format. Scope (1.2) first said fixed price only. **Decided (Sobe, 2026-11-26): auctions are in**, alongside fixed price. Scope updated. | 2026-11-26 | Resolved 2026-11-26 |
+| TBD-003 | Listing format. Scope (1.2) first said fixed price only. **Decided (Sobe, 2026-11-26): every listing is an auction**; fixed-price-only listings are out. Scope updated. | 2026-11-26 | Resolved 2026-11-26 |
 | TBD-004 | Auctions were not tested in the PoC, which used fixed-price listings only. Unproven: that the GraphQL `createListing` API creates a **scheduled** auction, validates it, and lets it be edited and safely cancelled, and what scheduling an auction costs. Retire during architecture or construction, before relying on auctions. | 2026-11-26 | Open |
+| TBD-005 | Buy It Now price. Sobe (2026-11-26): the fixed price is 20% above the minimum auction price. eBay requires an auction's Buy It Now price to be **at least 30%** above its starting price (eBay help, checked 2026-11-26), so 20% above the starting price would be rejected. Confirm the rule. | 2026-11-26 | Open |
