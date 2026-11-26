@@ -41,6 +41,7 @@ Confirmed by Sobe 2026-11-26.
   description.
 - A price based on sold comparables (G-4; data source TBD-002).
 - Uploading the member's own photos to the listing.
+- Both listing formats: fixed price and auction (Sobe, 2026-11-26; TBD-003).
 - Validating the listing with eBay, then scheduling it 24 hours out.
 - Reviewing, editing and safely cancelling a scheduled listing.
 - Use from Claude and ChatGPT, on phone and PC, with one sign-in per member.
@@ -50,7 +51,6 @@ Confirmed by Sobe 2026-11-26.
 
 - Anything after a listing goes live: monitoring, relisting, buyer messages,
   shipping, returns, sales reporting.
-- Auction format; listings are fixed price only.
 - Other marketplaces (for example Facebook Marketplace or Mercari).
 - More than one eBay account, or users outside the household.
 - A web page or app of DraftMyListing's own.
@@ -166,8 +166,8 @@ Confirmed by Sobe 2026-11-26. One item per listing, one listing at a time.
 
 Confirmed by Sobe 2026-11-26. The assistant sets the price on its own; the
 member sees it and can change it, during drafting or the review window.
-Settles TBD-002. Listing format (fixed price or auction) is being confirmed:
-see TBD-003.
+Settles TBD-002. Both fixed price and auction are in scope (TBD-003);
+auction-specific pricing is added below once its details are confirmed.
 
 | ID | Requirement | Priority | Notes |
 |---|---|---|---|
@@ -199,4 +199,5 @@ _Pending (Phase 4)._
 |---|---|---|---|
 | TBD-001 | ChatGPT custom MCP connector support, especially in its phone app, is untested (PoC question 8). It is a stated must-have. | 2026-11-22 (PoC) | Open |
 | TBD-002 | Source of **sold**-item prices. Sobe (2026-11-26): the price comes from the assistant's research on similar items that have **sold**. eBay's sold-price API (Marketplace Insights) is limited release and granted per application. Checked 2026-11-26: neither the production keyset's Authorization Code scopes nor its Client Credentials scopes (only `api_scope` and `commerce.feedback.readonly`) include `buy.marketplace.insights`, matching the PoC's `invalid_scope` (question 7). **Decided (Sobe, 2026-11-26):** sold comparables from whatever the assistant can reach, with a clearly labeled fallback to for-sale prices (eBay Browse) when sold data is not enough; Sobe applies to eBay for Marketplace Insights access separately. Specified in FR-PRICE. | 2026-11-26 | Resolved 2026-11-26 |
-| TBD-003 | Listing format. Scope (1.2) says fixed price only and auctions out; Sobe then said "fixed price and bids only" (2026-11-26). Confirm whether auctions are in. | 2026-11-26 | Open |
+| TBD-003 | Listing format. Scope (1.2) first said fixed price only. **Decided (Sobe, 2026-11-26): auctions are in**, alongside fixed price. Scope updated. | 2026-11-26 | Resolved 2026-11-26 |
+| TBD-004 | Auctions were not tested in the PoC, which used fixed-price listings only. Unproven: that the GraphQL `createListing` API creates a **scheduled** auction, validates it, and lets it be edited and safely cancelled, and what scheduling an auction costs. Retire during architecture or construction, before relying on auctions. | 2026-11-26 | Open |
