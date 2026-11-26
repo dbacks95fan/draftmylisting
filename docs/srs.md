@@ -216,6 +216,24 @@ eBay listing is the source of truth from then on.
 | FR-PHOTO-013 | While a listing exists on eBay, the system shall report its details from eBay, not from any copy DraftMyListing holds. | Must | eBay is the source of truth (PoC question 4). |
 | FR-PHOTO-014 | If a member has not confirmed they are done with a draft 30 days after its listing was created on eBay, then the system shall delete all information and files related to that draft, including its photos. | Must | Sobe, 2026-11-26. |
 
+### 3.4 Shipping, returns and payment terms (FR-TERMS)
+
+Confirmed by Sobe 2026-11-26. These are household settings the admin sets
+once; members are not asked about them per item.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-TERMS-001 | The system shall let the household admin set the household's shipping and return settings: item location (postal code), shipping cost method, shipping service, handling time, return policy and international shipping. | Must | Defaults in FR-TERMS-002..006; values chosen at setup. |
+| FR-TERMS-002 | When the system creates a listing, the system shall apply the household's shipping and return settings to it. | Must | No per-item questions (G-1). |
+| FR-TERMS-003 | When the system creates a listing, the system shall use calculated shipping, so the buyer pays the postage for their location based on the package size and weight. | Must | Default (Sobe). |
+| FR-TERMS-004 | When the system creates a listing, the system shall offer USPS Ground Advantage as its shipping service. | Must | Default (Sobe). |
+| FR-TERMS-005 | When the system creates a listing, the system shall set a handling time of 3 business days. | Must | Default (Sobe). |
+| FR-TERMS-006 | When the system creates a listing, the system shall accept returns within 30 days, with the buyer paying return shipping. | Must | Default (Sobe). |
+| FR-TERMS-007 | When the system creates a listing, the system shall offer domestic shipping only. | Must | International off (Sobe). |
+| FR-TERMS-008 | When the item has been identified, the system shall estimate the packed item's dimensions and weight. | Must | Needed for calculated shipping. The member can correct them during the review window (FR-LIST). |
+| FR-TERMS-009 | If the item is too large or heavy for the household's shipping service, then the system shall ask the member how to handle it, such as local pickup only. | Must | |
+| FR-TERMS-010 | The system shall leave payment collection to eBay and shall not ask the member for payment settings. | Must | eBay manages payments. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
