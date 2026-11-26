@@ -17,7 +17,18 @@
 
 ### 1.1 Purpose
 
-_Pending (Phase 1)._
+DraftMyListing helps one household sell items on eBay. A household member
+describes an item and supplies photos to their AI assistant (Claude or
+ChatGPT), from a phone or a PC. DraftMyListing researches the item and prepares
+a complete eBay listing on the household's one shared seller account —
+category, item specifics, condition, price and photos — scheduled to go live
+24 hours later. During that window any household member can review the
+listing, edit it (through the assistant or in eBay Seller Hub) or cancel it
+safely. If no one acts, eBay starts the listing on schedule.
+
+Confirmed by Sobe 2026-11-26. Read as confirmed with it: the product serves
+**this household only**, against **one** eBay seller account, and the
+assistants are its **only** entry point (no web page or app of its own).
 
 ### 1.2 Product scope
 
