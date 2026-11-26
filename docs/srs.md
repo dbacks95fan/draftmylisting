@@ -168,9 +168,9 @@ Confirmed by Sobe 2026-11-26. One item per listing, one listing at a time.
 
 Confirmed by Sobe 2026-11-26. The assistant sets the price on its own; the
 member sees it and can change it, during drafting or the review window.
-Settles TBD-002. Every listing is an auction (TBD-003); the auction prices
-(starting price and Buy It Now) are being confirmed in TBD-005. Where this
-table says "the price", it means the auction price the comparables support.
+Settles TBD-002. Every listing is an auction (TBD-003). Sold comparables set
+the **starting price**; Buy It Now is 30% above it (TBD-005). Where this table
+says "the price", it means the starting price.
 
 | ID | Requirement | Priority | Notes |
 |---|---|---|---|
@@ -183,10 +183,14 @@ table says "the price", it means the auction price the comparables support.
 | FR-PRICE-007 | When the system has set the price, the system shall continue drafting without waiting for the member to confirm the price. | Must | Sobe: the 24-hour window is the price review (G-1). |
 | FR-PRICE-008 | When the system has set the price, the system shall show the member the price it is using. | Must | Sobe, 2026-11-26. |
 | FR-PRICE-009 | When the system shows the price, the system shall show its evidence: the number of comparables, their price range, and up to 5 examples, each with its price, sale date and source. | Must | Source matters for web results. |
-| FR-PRICE-010 | When a member tells the system to change the price, the system shall use the member's price in place of its own. | Must | During drafting; changes during the review window are in FR-LIST. |
+| FR-PRICE-010 | When a member tells the system to change the starting price or the Buy It Now price, the system shall use the member's price in place of its own. | Must | During drafting; changes during the review window are in FR-LIST. |
 | FR-PRICE-011 | If fewer than 3 sold comparables are found from all sources, then the system shall set the price from items currently for sale on eBay and shall tell the member that the price is based on asking prices, not sales. | Must | Browse API, app token (PoC question 7). |
 | FR-PRICE-012 | If no comparables are found from any source, then the system shall ask the member for a price. | Must | The only case where pricing needs the member. |
 | FR-PRICE-013 | The system shall create every listing without Best Offer. | Must | Sobe: no offers. |
+| FR-PRICE-014 | When the system has set the price from comparables, the system shall use it as the auction's starting price. | Must | TBD-005, option 1. |
+| FR-PRICE-015 | When the starting price is set or changed, the system shall set the Buy It Now price to the starting price plus 30%, rounded up to the next cent. | Must | eBay minimum gap is 30% in most categories. A member's own Buy It Now price (FR-PRICE-010) is kept until the starting price changes again. |
+| FR-PRICE-016 | If a member's prices would put Buy It Now less than 30% above the starting price, then the system shall tell the member eBay's rule and propose the lowest Buy It Now price eBay allows. | Must | |
+| FR-PRICE-017 | The system shall create every listing without a reserve price. | Must | Reserve option declined (TBD-005). |
 
 ## 4. Non-functional requirements
 
@@ -204,4 +208,4 @@ _Pending (Phase 4)._
 | TBD-002 | Source of **sold**-item prices. Sobe (2026-11-26): the price comes from the assistant's research on similar items that have **sold**. eBay's sold-price API (Marketplace Insights) is limited release and granted per application. Checked 2026-11-26: neither the production keyset's Authorization Code scopes nor its Client Credentials scopes (only `api_scope` and `commerce.feedback.readonly`) include `buy.marketplace.insights`, matching the PoC's `invalid_scope` (question 7). **Decided (Sobe, 2026-11-26):** sold comparables from whatever the assistant can reach, with a clearly labeled fallback to for-sale prices (eBay Browse) when sold data is not enough; Sobe applies to eBay for Marketplace Insights access separately. Specified in FR-PRICE. | 2026-11-26 | Resolved 2026-11-26 |
 | TBD-003 | Listing format. Scope (1.2) first said fixed price only. **Decided (Sobe, 2026-11-26): every listing is an auction**; fixed-price-only listings are out. Scope updated. | 2026-11-26 | Resolved 2026-11-26 |
 | TBD-004 | Auctions were not tested in the PoC, which used fixed-price listings only. Unproven: that the GraphQL `createListing` API creates a **scheduled** auction, validates it, and lets it be edited and safely cancelled, and what scheduling an auction costs. Retire during architecture or construction, before relying on auctions. | 2026-11-26 | Open |
-| TBD-005 | Buy It Now price. Sobe (2026-11-26): the fixed price is 20% above the minimum auction price. eBay requires an auction's Buy It Now price to be **at least 30%** above its starting price (eBay help, checked 2026-11-26), so 20% above the starting price would be rejected. Confirm the rule. | 2026-11-26 | Open |
+| TBD-005 | Buy It Now price. Sobe (2026-11-26): the fixed price is 20% above the minimum auction price. eBay requires an auction's Buy It Now price to be **at least 30%** above its starting price (eBay help, checked 2026-11-26), so 20% above the starting price would be rejected. **Decided (Sobe, 2026-11-26):** sold comparables set the starting price; Buy It Now is 30% above it; no reserve. Specified in FR-PRICE-014..017. | 2026-11-26 | Resolved 2026-11-26 |
