@@ -62,7 +62,16 @@ Confirmed by Sobe 2026-11-26.
 
 ### 2.3 Stakeholders and user classes
 
-_Pending (Phase 1)._
+Confirmed by Sobe 2026-11-26. About **3** household members in all.
+
+| User class | Who | What they do |
+|---|---|---|
+| Household member | Any family member who sells | Takes photos, answers the assistant's clarifying questions, and creates any listings they want; reviews, edits and cancels listings. All members share the one eBay seller account. Whether a member may edit or cancel another member's listing is confirmed in the authorization area. |
+| Household admin | Sobe | Everything a member does, plus setup: sets up each member's device and access, connects the eBay account, adds and removes members, and handles problems. Members do not set themselves up. |
+| Buyer | eBay shoppers | Never use DraftMyListing; see only the finished listing on eBay. |
+
+Implication for UX and setup: members need no technical skill beyond taking
+photos and chatting with their assistant, because the admin does all setup.
 
 ### 2.4 Operating environment
 
