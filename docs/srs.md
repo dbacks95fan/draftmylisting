@@ -164,7 +164,7 @@ Confirmed by Sobe 2026-11-26. One item per listing, one listing at a time.
 | FR-DRAFT-016 | If the photos show more than one item, then the system shall ask the member whether to list them together as one lot or to list one of them. | Must | One listing at a time either way. |
 | FR-DRAFT-017 | If the item appears to be prohibited or restricted on eBay, then the system shall tell the member why and shall not create a listing for it. | Must | For example alcohol, weapons, recalled goods. |
 
-### 3.2 Pricing (FR-PRICE)
+### 3.2 Pricing and auction terms (FR-PRICE)
 
 Confirmed by Sobe 2026-11-26. The assistant sets the price on its own; the
 member sees it and can change it, during drafting or the review window.
@@ -191,6 +191,7 @@ says "the price", it means the starting price.
 | FR-PRICE-015 | When the starting price is set or changed, the system shall set the Buy It Now price to the starting price plus 30%, rounded up to the next cent. | Must | eBay minimum gap is 30% in most categories. A member's own Buy It Now price (FR-PRICE-010) is kept until the starting price changes again. |
 | FR-PRICE-016 | If a member's prices would put Buy It Now less than 30% above the starting price, then the system shall tell the member eBay's rule and propose the lowest Buy It Now price eBay allows. | Must | |
 | FR-PRICE-017 | The system shall create every listing without a reserve price. | Must | Reserve option declined (TBD-005). |
+| FR-PRICE-018 | The system shall create every auction with a duration of 10 days. | Must | Sobe, 2026-11-26. Cost of 10-day auctions: TBD-004. |
 
 ## 4. Non-functional requirements
 
@@ -207,5 +208,5 @@ _Pending (Phase 4)._
 | TBD-001 | ChatGPT custom MCP connector support, especially in its phone app, is untested (PoC question 8). It is a stated must-have. | 2026-11-22 (PoC) | Open |
 | TBD-002 | Source of **sold**-item prices. Sobe (2026-11-26): the price comes from the assistant's research on similar items that have **sold**. eBay's sold-price API (Marketplace Insights) is limited release and granted per application. Checked 2026-11-26: neither the production keyset's Authorization Code scopes nor its Client Credentials scopes (only `api_scope` and `commerce.feedback.readonly`) include `buy.marketplace.insights`, matching the PoC's `invalid_scope` (question 7). **Decided (Sobe, 2026-11-26):** sold comparables from whatever the assistant can reach, with a clearly labeled fallback to for-sale prices (eBay Browse) when sold data is not enough; Sobe applies to eBay for Marketplace Insights access separately. Specified in FR-PRICE. | 2026-11-26 | Resolved 2026-11-26 |
 | TBD-003 | Listing format. Scope (1.2) first said fixed price only. **Decided (Sobe, 2026-11-26): every listing is an auction**; fixed-price-only listings are out. Scope updated. | 2026-11-26 | Resolved 2026-11-26 |
-| TBD-004 | Auctions were not tested in the PoC, which used fixed-price listings only. Unproven: that the GraphQL `createListing` API creates a **scheduled** auction, validates it, and lets it be edited and safely cancelled, and what scheduling an auction costs. Retire during architecture or construction, before relying on auctions. | 2026-11-26 | Open |
+| TBD-004 | Auctions were not tested in the PoC, which used fixed-price listings only. Unproven: that the GraphQL `createListing` API creates a **scheduled** auction, validates it, and lets it be edited and safely cancelled, and what scheduling an auction, and a 10-day duration, cost. Retire during architecture or construction, before relying on auctions. | 2026-11-26 | Open |
 | TBD-005 | Buy It Now price. Sobe (2026-11-26): the fixed price is 20% above the minimum auction price. eBay requires an auction's Buy It Now price to be **at least 30%** above its starting price (eBay help, checked 2026-11-26), so 20% above the starting price would be rejected. **Decided (Sobe, 2026-11-26):** sold comparables set the starting price; Buy It Now is 30% above it; no reserve. Specified in FR-PRICE-014..017. | 2026-11-26 | Resolved 2026-11-26 |
