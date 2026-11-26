@@ -129,7 +129,9 @@ _Pending._
 
 ### 2.6 Assumptions and dependencies
 
-_Pending._
+| ID | Assumption or dependency | Effect if false |
+|---|---|---|
+| A-1 | Each member's assistant has web search turned on. The admin turns it on as part of device setup. | Pricing falls back to for-sale prices more often (FR-PRICE-011). |
 
 ## 3. Functional requirements
 
@@ -160,6 +162,29 @@ Confirmed by Sobe 2026-11-26. One item per listing, one listing at a time.
 | FR-DRAFT-016 | If the photos show more than one item, then the system shall ask the member whether to list them together as one lot or to list one of them. | Must | One listing at a time either way. |
 | FR-DRAFT-017 | If the item appears to be prohibited or restricted on eBay, then the system shall tell the member why and shall not create a listing for it. | Must | For example alcohol, weapons, recalled goods. |
 
+### 3.2 Pricing (FR-PRICE)
+
+Confirmed by Sobe 2026-11-26. The assistant sets the price on its own; the
+member sees it and can change it, during drafting or the review window.
+Settles TBD-002. Listing format (fixed price or auction) is being confirmed:
+see TBD-003.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-PRICE-001 | When the item and its condition have been determined, the system shall search for sold comparables: items of the same model, or the closest match, in similar condition. | Must | G-4 |
+| FR-PRICE-002 | When the system selects sold comparables, the system shall use only items sold within the last 90 days. | Must | eBay sold history is about 90 days. |
+| FR-PRICE-003 | When the system selects comparables, the system shall exclude lots, bundles with extras, and items sold for parts or not working, unless the item being listed is of the same kind. | Must | |
+| FR-PRICE-004 | Where eBay has granted the application Marketplace Insights access, the system shall use eBay's sold-item data as its first source of sold comparables. | Could | Not granted today (TBD-002). Sobe applies separately. |
+| FR-PRICE-005 | When eBay's sold-item data is unavailable or gives fewer than 3 sold comparables, the system shall search the web for sold prices of comparable items. | Must | The assistant's own web search (assumption A-1). |
+| FR-PRICE-006 | When at least 3 sold comparables have been found, the system shall set the price from them, adjusted for the item's condition. | Must | "Enough" = 3 (Sobe, 2026-11-26). |
+| FR-PRICE-007 | When the system has set the price, the system shall continue drafting without waiting for the member to confirm the price. | Must | Sobe: the 24-hour window is the price review (G-1). |
+| FR-PRICE-008 | When the system has set the price, the system shall show the member the price it is using. | Must | Sobe, 2026-11-26. |
+| FR-PRICE-009 | When the system shows the price, the system shall show its evidence: the number of comparables, their price range, and up to 5 examples, each with its price, sale date and source. | Must | Source matters for web results. |
+| FR-PRICE-010 | When a member tells the system to change the price, the system shall use the member's price in place of its own. | Must | During drafting; changes during the review window are in FR-LIST. |
+| FR-PRICE-011 | If fewer than 3 sold comparables are found from all sources, then the system shall set the price from items currently for sale on eBay and shall tell the member that the price is based on asking prices, not sales. | Must | Browse API, app token (PoC question 7). |
+| FR-PRICE-012 | If no comparables are found from any source, then the system shall ask the member for a price. | Must | The only case where pricing needs the member. |
+| FR-PRICE-013 | The system shall create every listing without Best Offer. | Must | Sobe: no offers. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
@@ -174,3 +199,4 @@ _Pending (Phase 4)._
 |---|---|---|---|
 | TBD-001 | ChatGPT custom MCP connector support, especially in its phone app, is untested (PoC question 8). It is a stated must-have. | 2026-11-22 (PoC) | Open |
 | TBD-002 | Source of **sold**-item prices. Sobe (2026-11-26): the price comes from the assistant's research on similar items that have **sold**. eBay's sold-price API (Marketplace Insights) is limited release and granted per application. Checked 2026-11-26: neither the production keyset's Authorization Code scopes nor its Client Credentials scopes (only `api_scope` and `commerce.feedback.readonly`) include `buy.marketplace.insights`, matching the PoC's `invalid_scope` (question 7). **Decided (Sobe, 2026-11-26):** sold comparables from whatever the assistant can reach, with a clearly labeled fallback to for-sale prices (eBay Browse) when sold data is not enough; Sobe applies to eBay for Marketplace Insights access separately. Specified in FR-PRICE. | 2026-11-26 | Resolved 2026-11-26 |
+| TBD-003 | Listing format. Scope (1.2) says fixed price only and auctions out; Sobe then said "fixed price and bids only" (2026-11-26). Confirm whether auctions are in. | 2026-11-26 | Open |
