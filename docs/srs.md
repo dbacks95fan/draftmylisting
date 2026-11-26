@@ -1,6 +1,6 @@
 # DraftMyListing — Software Requirements Specification
 
-> Version: 0.1 (draft, in progress) · Requirement syntax: _TBD (chosen at end of Phase 1)_ ·
+> Version: 0.1 (draft, in progress) · Requirement syntax: EARS ·
 > Owner: Sobe · Started: 2026-11-26
 >
 > Lineage: ISO/IEC/IEEE 29148. This document is the source of truth for the
