@@ -292,6 +292,26 @@ either assistant.
 | FR-ASST-005 | When a member asks for something the system can do but leaves out a detail the system needs, the system shall direct the assistant to ask the member for that detail instead of declining. | Must | PoC question 8: Claude declined over a missing price. |
 | FR-ASST-006 | The system shall describe each of its tools in everyday terms that match how members ask for things. | Must | Tool descriptions steer whether the assistant uses a tool (PoC). Verified with sample member requests. |
 
+### 3.8 Member sign-in (FR-AUTH)
+
+Confirmed by Sobe 2026-11-27. Builds on the PoC's household sign-in
+(`src/mcp/household-auth.ts`). No self sign-up and no two-step sign-in.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-AUTH-001 | When a member's assistant connects to the system for the first time, the system shall show the household sign-in page and ask for the member's name and password. | Must | One sign-in per member per assistant (G-5). |
+| FR-AUTH-002 | When a member signs in with a correct name and password, the system shall grant that member's assistant access to the system. | Must | |
+| FR-AUTH-003 | If a request reaches the system without a valid sign-in, then the system shall refuse it without performing any action. | Must | HTTP 401 (PoC question 8, stage 2). |
+| FR-AUTH-004 | While a member uses the system at least once every 30 days, the system shall keep that member signed in. | Must | Sobe: 30 days is right. PoC: 1-hour passes renewed by a 30-day rotating refresh. |
+| FR-AUTH-005 | If a member has not used the system for more than 30 days, then the system shall require the member to sign in again. | Must | |
+| FR-AUTH-006 | If a member's sign-in has expired, then the system shall direct the assistant to tell the member to reconnect, instead of reporting an error. | Must | |
+| FR-AUTH-007 | When the household admin sets a member's password, the system shall require it to be at least 12 characters. | Must | PoC minimum. |
+| FR-AUTH-008 | The system shall store members' passwords only in hashed form. | Must | The PoC kept them readable in a settings file; acceptable for the test only. |
+| FR-AUTH-009 | If 5 wrong passwords are entered on one sign-in page, then the system shall stop accepting sign-ins on that page and tell the member to connect again from the assistant. | Must | PoC behavior. |
+| FR-AUTH-010 | If 10 wrong passwords are entered for the same member name within 15 minutes, then the system shall refuse sign-ins for that name for 15 minutes. | Must | Guessing protection from the internet. |
+| FR-AUTH-011 | When the system performs an action, the system shall record which member requested it. | Must | Feeds FR-AUDIT. |
+| FR-AUTH-012 | The system shall not offer self sign-up, password reset by email, or two-step sign-in. | Must | Sobe: the admin creates members and resets passwords (FR-ADMIN); no two-step. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
