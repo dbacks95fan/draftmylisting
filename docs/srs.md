@@ -317,6 +317,24 @@ household sign-in (`src/mcp/household-auth.ts`). No two-step sign-in.
 | FR-AUTH-011 | When the system performs an action, the system shall record which assistant connection requested it. | Must | Revised 2026-11-27: no individual users; the connection (assistant and sign-in) is what can be told apart. Feeds FR-AUDIT. |
 | FR-AUTH-012 | The system shall not offer individual user accounts, self sign-up, password reset by email, or two-step sign-in. | Must | Sobe: single shared sign-in; the admin sets the password (FR-ADMIN); no two-step. |
 
+### 3.9 Household admin (FR-ADMIN)
+
+Confirmed by Sobe 2026-11-27. Mixed approach: viewing connections and changing
+household settings happen in the assistant chat; changing the password and
+signing everyone out are done by a command on the NAS, so the password never
+passes through an assistant provider's servers. Because the sign-in is shared,
+anyone signed in can use the chat-side admin tools; that is accepted for one
+household.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-ADMIN-001 | When the household admin runs the change-password command on the NAS, the system shall set the new household password and end every existing sign-in. | Must | Rules: FR-AUTH-007, 008. |
+| FR-ADMIN-002 | When the household admin runs the sign-everyone-out command on the NAS, the system shall end every existing sign-in without changing the password. | Must | For example after a lost phone. |
+| FR-ADMIN-003 | When a member asks in the assistant chat for the connected assistants, the system shall show each connection with its assistant and when it was last used. | Must | |
+| FR-ADMIN-004 | When a member asks in the assistant chat to change a household setting, the system shall show the current and new values and apply the change after the member confirms it. | Must | Settings: FR-TERMS-001. Confirmation guards against a slip, since settings affect every later listing. |
+| FR-ADMIN-005 | If a household setting change would give an invalid value, such as a postal code that does not exist, then the system shall reject the change and say why. | Must | |
+| FR-ADMIN-006 | The system shall not change the household password or end sign-ins in response to a request made through an assistant. | Must | Those actions are NAS-only. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
