@@ -314,7 +314,7 @@ household sign-in (`src/mcp/household-auth.ts`). No two-step sign-in.
 | FR-AUTH-008 | The system shall store members' passwords only in hashed form. | Must | The PoC kept them readable in a settings file; acceptable for the test only. |
 | FR-AUTH-009 | If 5 wrong passwords are entered on one sign-in page, then the system shall stop accepting sign-ins on that page and tell the member to connect again from the assistant. | Must | PoC behavior. |
 | FR-AUTH-010 | If 10 wrong passwords are entered across all sign-in pages within 15 minutes, then the system shall refuse all sign-ins for 15 minutes. | Must | Revised 2026-11-27: no member names, so the limit is household-wide. Guessing protection from the internet. |
-| FR-AUTH-011 | When the system performs an action, the system shall record which assistant connection requested it. | Must | Revised 2026-11-27: no individual users; the connection (assistant and sign-in) is what can be told apart. Feeds FR-AUDIT. |
+| FR-AUTH-011 | ~~When the system performs an action, the system shall record which assistant connection requested it.~~ | — | **Withdrawn 2026-11-27:** no activity history (FR-AUDIT). ID retired, not reused. |
 | FR-AUTH-012 | The system shall not offer individual user accounts, self sign-up, password reset by email, or two-step sign-in. | Must | Sobe: single shared sign-in; the admin sets the password (FR-ADMIN); no two-step. |
 
 ### 3.9 Household admin (FR-ADMIN)
@@ -363,6 +363,18 @@ only when someone is chatting, so problems surface at the next conversation.
 |---|---|---|---|
 | FR-NOTIF-001 | The system shall not send notifications outside the assistant conversation, such as email, text messages or push notifications. | Must | Sobe, 2026-11-27. |
 | FR-NOTIF-002 | When a member first uses DraftMyListing in a conversation, the system shall report every unresolved problem it knows of, such as a failed cancel, a failed scheduled-listing change, or an eBay connection that has expired or expires within 30 days. | Must | Delivers FR-EBAY-006 and FR-LIST-010 at the next chat. |
+
+### 3.12 Activity history (FR-AUDIT)
+
+Confirmed by Sobe 2026-11-27: no activity history. The goal is to build a
+listing quickly from a few photos; once the listing is live, its history does
+not matter. Short-lived diagnostic logs for fixing faults are a separate,
+non-functional matter (section 4, observability).
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-AUDIT-001 | The system shall not offer an activity history of listings, sign-ins or admin actions. | Must | Sobe, 2026-11-27. |
+| FR-AUDIT-002 | When a draft is deleted, the system shall delete every record it holds about that draft and its listing. | Must | Applies to FR-PHOTO-012 and FR-PHOTO-014. eBay keeps its own records. |
 
 ## 4. Non-functional requirements
 
