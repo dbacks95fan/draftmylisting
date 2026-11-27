@@ -9,16 +9,22 @@ Import-Module PSScriptAnalyzer
 $scripts = Get-ChildItem -Path (Join-Path $PSScriptRoot '..') -Recurse -Filter '*.ps1'
 $failures = 0
 
+function Write-Failure {
+    # On GitHub the ::error:: prefix turns the line into an annotation on the run.
+    param([string]$Message)
+    if ($env:GITHUB_ACTIONS -eq 'true') { Write-Output "::error::$Message" }
+    else { Write-Output "  FAIL  $Message" }
+    $script:failures++
+}
+
 foreach ($file in $scripts) {
     $findings = Invoke-ScriptAnalyzer -Path $file.FullName -Severity Information, Warning, Error
     foreach ($finding in $findings) {
-        Write-Output "  FAIL  $($file.Name):$($finding.Line) $($finding.RuleName): $($finding.Message)"
-        $failures++
+        Write-Failure "$($file.Name):$($finding.Line) $($finding.RuleName): $($finding.Message)"
     }
     $text = Get-Content -LiteralPath $file.FullName -Raw
     if ((Invoke-Formatter -ScriptDefinition $text) -ne $text) {
-        Write-Output "  FAIL  $($file.Name) is not formatted (run Invoke-Formatter)"
-        $failures++
+        Write-Failure "$($file.Name) is not formatted (run Invoke-Formatter)"
     }
     else {
         Write-Output "  ok    $($file.Name) lint and format"
@@ -28,6 +34,7 @@ foreach ($file in $scripts) {
 # Dot-sourcing defines the functions without deploying.
 . (Join-Path $PSScriptRoot '..\deploy-synology.ps1')
 
+$before = $failures
 $command = Get-RemoteInstallCommand -AppDir '/volume2/docker/draftmylisting' -SettingsPath '/volume2/docker/draftmylisting-config/runtime.env' -WithSettings $true
 $expected = @(
     'set -eu; umask 077; mkdir -p /volume2/docker/draftmylisting-config;'
@@ -37,27 +44,23 @@ $expected = @(
 )
 foreach ($part in $expected) {
     if (-not $command.Contains($part)) {
-        Write-Output "  FAIL  remote command is missing: $part"
-        $failures++
+        Write-Failure "remote command is missing: $part"
     }
 }
 if ($command.Contains('"')) {
-    Write-Output '  FAIL  remote command contains a double quote'
-    $failures++
+    Write-Failure 'remote command contains a double quote'
 }
 $withoutSettings = Get-RemoteInstallCommand -AppDir '/volume2/docker/draftmylisting' -SettingsPath '/volume2/docker/draftmylisting-config/runtime.env' -WithSettings $false
 if ($withoutSettings.Contains('draftmylisting-runtime.env')) {
-    Write-Output '  FAIL  remote command moves a settings file that was not uploaded'
-    $failures++
+    Write-Failure 'remote command moves a settings file that was not uploaded'
 }
-Write-Output '  ok    remote install command'
+if ($failures -eq $before) { Write-Output '  ok    remote install command' }
 
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $inside = Join-Path $repo 'docker-compose.yml'
 try {
     Assert-OutsideRepository -Path $inside -Repo $repo | Out-Null
-    Write-Output '  FAIL  a settings file inside the repository was accepted'
-    $failures++
+    Write-Failure 'a settings file inside the repository was accepted'
 }
 catch {
     Write-Output '  ok    refuses a settings file inside the repository'
@@ -66,8 +69,7 @@ $outsideFile = New-TemporaryFile
 try {
     $accepted = Assert-OutsideRepository -Path $outsideFile.FullName -Repo $repo
     if ($accepted -ne (Resolve-Path -LiteralPath $outsideFile.FullName).Path) {
-        Write-Output '  FAIL  an outside settings file was not returned as a full path'
-        $failures++
+        Write-Failure 'an outside settings file was not returned as a full path'
     }
     else {
         Write-Output '  ok    accepts a settings file outside the repository'

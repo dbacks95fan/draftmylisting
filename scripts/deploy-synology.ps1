@@ -13,7 +13,7 @@ param(
     [string]$NasHost = $env:DRAFTMYLISTING_NAS_HOST,
     # The NAS listens for SSH on 7070, not the default 22.
     [int]$SshPort = 7070,
-    [string]$SshKeyPath = (Join-Path $env:USERPROFILE '.ssh\nas_key'),
+    [string]$SshKeyPath = (Join-Path ([Environment]::GetFolderPath('UserProfile')) '.ssh\nas_key'),
     [string]$Ref = 'HEAD',
     [string]$RemoteUser = 'DockerDeploy',
     [string]$AppDir = '/volume2/docker/draftmylisting',
