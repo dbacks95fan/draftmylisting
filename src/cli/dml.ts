@@ -1,6 +1,7 @@
 // Copyright (c) 2026 DPSystems, LLC.
 // The admin CLI (architecture ADR-010), run inside the container over SSH:
-//   node src/cli/dml.ts health
+//   node src/cli/dml.ts health   server + eBay connection, for the admin
+//   node src/cli/dml.ts ping     server only, for Docker's health check
 // Later features add password, signout-all and connect-ebay.
 
 import { loadServerSettings } from "../config/settings.ts";
@@ -40,7 +41,21 @@ async function health(): Promise<number> {
   return failed || !ebay.ok ? 1 : 0;
 }
 
-const commands: Record<string, () => Promise<number>> = { health };
+/** Server only: an eBay outage must not make Docker restart or flag the container. */
+async function ping(): Promise<number> {
+  const settings = loadServerSettings();
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:${settings.healthPort}/healthz`,
+      { signal: AbortSignal.timeout(4000) },
+    );
+    return response.ok ? 0 : 1;
+  } catch {
+    return 1;
+  }
+}
+
+const commands: Record<string, () => Promise<number>> = { health, ping };
 const name = process.argv[2] ?? "";
 const command = commands[name];
 if (command === undefined) {
