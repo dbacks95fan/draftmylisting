@@ -129,11 +129,24 @@ photos and chatting with their assistant, because the admin does all setup.
 
 ### 2.4 Operating environment
 
-_Pending._
+- **Server:** Docker on the household's Synology NAS, reachable from the
+  internet over HTTPS at a public address (NFR-PORT-001, NFR-SEC-001).
+- **Clients:** current Claude (web, desktop, phone apps) and ChatGPT (web,
+  phone apps) on the members' own phones and PCs (NFR-COMP-001).
+- **External service:** eBay US production APIs on the household's one seller
+  account. eBay's sandbox cannot validate listings (PoC question 2).
 
 ### 2.5 Constraints
 
-_Pending._
+- **eBay rules:** follow eBay's API License Agreement and developer program
+  policies; request minimum OAuth scopes; no scraping (NFR-COMPL-001).
+- **No paid services:** the only costs are eBay's own fees (NFR-COMPL-002).
+- **Live eBay calls are dangerous:** an API create without a schedule makes a
+  listing live at once. The PoC safety rules (future start on every create,
+  `VALIDATE` set explicitly) are permanent (FR-SCHED-001, FR-SCHED-003).
+- **No individual users:** one shared household sign-in (SRS 2.3).
+- **Chat only:** no web page or app of its own, except a photo upload link if
+  needed (TBD-006); no notifications outside the chat (FR-NOTIF-001).
 
 ### 2.6 Assumptions and dependencies
 
@@ -392,7 +405,31 @@ Confirmed by Sobe 2026-11-27.
 
 ## 4. Non-functional requirements
 
-_Pending (Phase 3)._
+Confirmed by Sobe 2026-11-27. Each states a metric, target and condition.
+
+| ID | Category | Requirement | Measured by |
+|---|---|---|---|
+| NFR-PERF-001 | Performance | 95% of DraftMyListing tool calls shall respond within 5 seconds, excluding time spent waiting on eBay. | Server timing logs over a week of normal use. |
+| NFR-PERF-002 | Performance | Each photo shall upload to eBay within 15 seconds on the household's internet connection. | Timed uploads of 12-megapixel phone photos. |
+| NFR-PERF-003 | Performance | 95% of listings shall be scheduled on eBay within 2 minutes of the member's last answer. | Server timing logs. |
+| NFR-CAP-001 | Capacity | The system shall support 3 people, up to 3 conversations at once, and up to 20 listings a day. No larger scale is required. | Load test at 3 concurrent conversations. |
+| NFR-REL-001 | Reliability | No uptime target (home NAS). After a NAS reboot or a crash, the service shall restart by itself within 5 minutes. | Reboot test. |
+| NFR-REL-002 | Reliability | Drafts in progress shall survive a service restart. | Restart during a draft, then resume it. |
+| NFR-REL-003 | Reliability | No backups are required: drafts are temporary, and settings and the eBay connection can be re-created. | — |
+| NFR-SEC-001 | Security | All traffic from the internet shall use HTTPS. | Plain HTTP refused or redirected. |
+| NFR-SEC-002 | Security | Only the MCP endpoint, the sign-in page, the eBay return page and, if used, the photo upload link shall be reachable from the internet; the NAS's own management shall not be. | External port and path scan. |
+| NFR-SEC-003 | Security | Known high or critical vulnerabilities in the software the service depends on shall be fixed within 30 days of a fix being available. | `npm audit` and image scan on each release. |
+| NFR-USE-001 | Usability | A first-time member shall complete a listing from photos with no instructions beyond device setup. | Observed first use by each household member. |
+| NFR-COMP-001 | Compatibility | The system shall work with the current versions of Claude (web, desktop, phone apps) and ChatGPT (web, phone apps), and accept photos in JPEG, PNG and HEIC. | Acceptance test per assistant and device type. |
+| NFR-MAINT-001 | Maintainability | Every change shall pass the project checks (format, lint, type check, tests) before merging. | `npm run check`. |
+| NFR-MAINT-002 | Maintainability | eBay behavior shall be tested against recorded eBay responses; tests against live eBay shall follow the PoC safety rules. | Test suite review. |
+| NFR-PORT-001 | Portability | The service shall run in Docker on the household's Synology NAS. | Deployed and running on the NAS. |
+| NFR-COMPL-001 | Compliance | The system shall follow eBay's API License Agreement and developer program policies, and shall not scrape eBay. | Review against eBay's terms before release. |
+| NFR-COMPL-002 | Cost | The system shall use no paid services; the only costs shall be eBay's own fees. | Running-cost review. |
+| NFR-L10N-001 | Localization | The system shall support English, US dollars and the eBay US marketplace only. | — |
+| NFR-L10N-002 | Localization | Times shown to members shall be in the member's time zone; auctions end at 10 p.m. US Eastern (FR-SCHED-004). | Acceptance test from two time zones. |
+| NFR-OBS-001 | Observability | The service shall keep a technical log of errors and request outcomes for 14 days, containing no passwords, tokens, photos or conversation text. | Log review; age check. |
+| NFR-OBS-002 | Observability | A health check run on the NAS shall report whether the service is running and whether the eBay connection is valid. | Run with the connection valid and expired. |
 
 ## 5. External interface requirements
 
