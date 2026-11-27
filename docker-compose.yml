@@ -17,6 +17,9 @@ services:
     image: draftmylisting:local
     container_name: draftmylisting
     network_mode: host
+    # Runs as the NAS deploy user so the data folder can stay private to it;
+    # install-on-nas.sh writes the ids to .env. 1000 is the image's node user.
+    user: "${DRAFTMYLISTING_UID:-1000}:${DRAFTMYLISTING_GID:-1000}"
     restart: unless-stopped
     environment:
       DRAFTMYLISTING_ENV_FILE: /config/runtime.env
