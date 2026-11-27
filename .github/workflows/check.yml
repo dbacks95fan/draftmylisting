@@ -1,0 +1,29 @@
+# Copyright (c) 2026 DPSystems, LLC.
+# Runs the project checks (format, lint, type check, tests) on every pull
+# request and on main.
+---
+name: check
+
+# "on" is GitHub Actions' required key name, not a boolean, so yamllint's
+# truthy rule is wrong here.
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run check
