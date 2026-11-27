@@ -354,6 +354,16 @@ Confirmed by Sobe 2026-11-27. Builds on the PoC's eBay OAuth lessons
 | FR-EBAY-010 | If the eBay connection does not complete, such as an expired code or a `state` mismatch, then the system shall tell the admin why and that the connection must be started again. | Must | |
 | FR-EBAY-011 | If the connected eBay username is not the household seller account, then the system shall refuse to use the connection and tell the admin. | Must | Counterpart of FR-EBAY-004. |
 
+### 3.11 Notifications (FR-NOTIF)
+
+Confirmed by Sobe 2026-11-27: report only in the chat. The assistants respond
+only when someone is chatting, so problems surface at the next conversation.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-NOTIF-001 | The system shall not send notifications outside the assistant conversation, such as email, text messages or push notifications. | Must | Sobe, 2026-11-27. |
+| FR-NOTIF-002 | When a member first uses DraftMyListing in a conversation, the system shall report every unresolved problem it knows of, such as a failed cancel, a failed scheduled-listing change, or an eBay connection that has expired or expires within 30 days. | Must | Delivers FR-EBAY-006 and FR-LIST-010 at the next chat. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
