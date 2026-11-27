@@ -335,6 +335,25 @@ household.
 | FR-ADMIN-005 | If a household setting change would give an invalid value, such as a postal code that does not exist, then the system shall reject the change and say why. | Must | |
 | FR-ADMIN-006 | The system shall not change the household password or end sign-ins in response to a request made through an assistant. | Must | Those actions are NAS-only. |
 
+### 3.10 eBay account connection (FR-EBAY)
+
+Confirmed by Sobe 2026-11-27. Builds on the PoC's eBay OAuth lessons
+(`docs/poc/ebay-listing-feasibility.md`, "eBay OAuth lessons").
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-EBAY-001 | When the household admin runs the connect-eBay command on the NAS, the system shall give the admin an eBay sign-in link for the household seller account. | Must | Authorization code flow; `redirect_uri` is the RuName (PoC). |
+| FR-EBAY-002 | When eBay returns the admin to DraftMyListing after sign-in, the system shall verify the returned `state` and exchange the code for access automatically. | Must | The code expires in about 5 minutes; eBay's default return page loses it (PoC). |
+| FR-EBAY-003 | When the system requests access from eBay, the system shall request only the scopes its features need. | Must | Listings, photo upload, and reading business policies. eBay's OAuth agreement requires the minimum scopes. |
+| FR-EBAY-004 | When the eBay connection completes, the system shall check that the connected eBay username is the household seller account set by the admin, and report the result. | Must | |
+| FR-EBAY-005 | While the eBay connection is valid, the system shall renew its short-lived eBay access automatically, without involving any member. | Must | Access tokens last 2 hours (PoC). |
+| FR-EBAY-006 | While the eBay connection is within 30 days of expiring, the system shall tell the member in every conversation that uses DraftMyListing that the eBay connection must be renewed, and by what date. | Must | The refresh token lasts about 18 months (548 days, PoC). |
+| FR-EBAY-007 | When the household admin reconnects the eBay account, the system shall replace the previous connection with the new one. | Must | Same flow as FR-EBAY-001..004. |
+| FR-EBAY-008 | The system shall keep eBay keys and tokens only in protected storage on the NAS, and shall never show them in a conversation, a log or the code repository. | Must | PoC safety rule 4. |
+| FR-EBAY-009 | If the eBay connection has expired or been revoked, then the system shall stop listing actions, keep any draft, and tell the member that the eBay connection needs to be reconnected. | Must | For example revoked in eBay account settings. |
+| FR-EBAY-010 | If the eBay connection does not complete, such as an expired code or a `state` mismatch, then the system shall tell the admin why and that the connection must be started again. | Must | |
+| FR-EBAY-011 | If the connected eBay username is not the household seller account, then the system shall refuse to use the connection and tell the admin. | Must | Counterpart of FR-EBAY-004. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
