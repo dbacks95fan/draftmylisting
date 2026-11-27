@@ -253,6 +253,28 @@ draft is complete; the review window is the check, and cancelling is safe.
 | FR-SCHED-010 | If eBay is unavailable or does not respond, then the system shall keep the draft and tell the member that it can be submitted again later. | Must | |
 | FR-SCHED-011 | If the system repeats a listing creation request, then the system shall not create a second listing for the same draft. | Must | eBay idempotency key (PoC question 2). |
 
+### 3.6 Managing scheduled listings (FR-LIST)
+
+Confirmed by Sobe 2026-11-27. DraftMyListing manages listings only while they
+are scheduled. Live listings are out of scope: they are never changed by
+DraftMyListing and can only be changed directly on eBay.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-LIST-001 | When a member asks for the household's scheduled listings, the system shall show every scheduled listing on the household's eBay account with its title, starting price, Buy It Now price, creating member, and start and end times. | Must | Listings created outside DraftMyListing show no creating member. Creator record: FR-AUDIT. |
+| FR-LIST-002 | When a member asks to see a scheduled listing, the system shall read its current details from eBay and show them. | Must | Includes Seller Hub edits (PoC question 4). |
+| FR-LIST-003 | When a member asks to change a scheduled listing's title, description, prices, item specifics, condition, or package size and weight, the system shall update the listing on eBay and keep its listing ID. | Must | `updateListing` keeps the ID (PoC question 5). Price rules: FR-PRICE-010, 015, 016. |
+| FR-LIST-004 | When a member asks to add, remove or reorder a scheduled listing's photos, the system shall update the listing's photos on eBay, keeping at most 12. | Must | Photo rules: FR-PHOTO. |
+| FR-LIST-005 | The system shall let any member view, change or cancel any scheduled listing on the household's account, whichever member created it. | Must | Sobe: yes, though unlikely to happen. |
+| FR-LIST-006 | When a member asks to cancel a scheduled listing, the system shall ask the member to confirm the cancel before doing it. | Must | Sobe, 2026-11-27. A cancel cannot be undone. |
+| FR-LIST-007 | When a member confirms a cancel, the system shall remove the scheduled listing from eBay without the listing ever becoming visible to buyers. | Must | G-3. The PoC showed removing the schedule starts the listing; a safe method must be proven in construction (PoC question 4). |
+| FR-LIST-008 | When a cancel has completed, the system shall confirm from eBay that the listing is removed and never went live, and tell the member. | Must | |
+| FR-LIST-009 | If eBay rejects a change to a scheduled listing, then the system shall tell the member eBay's reason and suggest a fix. | Must | |
+| FR-LIST-010 | If a cancel fails, then the system shall tell the member at once, including how long until the listing goes live, and direct them to delete it in Seller Hub. | Must | |
+| FR-LIST-011 | If a listing a member asks about no longer exists on eBay, then the system shall tell the member it has been removed, not report an error. | Must | For example deleted in Seller Hub. |
+| FR-LIST-012 | If a member asks to change or cancel a listing that is live, then the system shall tell the member that live listings can only be changed on eBay directly. | Must | Sobe, 2026-11-27. |
+| FR-LIST-013 | While a listing is live, the system shall not send any change or cancel request for it to eBay. | Must | Guard that holds even if the assistant asks. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
