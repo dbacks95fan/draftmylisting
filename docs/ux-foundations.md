@@ -1,6 +1,6 @@
 # UX Foundations: DraftMyListing
 
-> Status: Draft · Last updated: 2026-11-27
+> Status: Approved by Sobe 2026-11-27 · Last updated: 2026-11-27
 > Sources: [`docs/srs.md`](srs.md) · [`docs/architecture.md`](architecture.md) ·
 > [`docs/use-cases.md`](use-cases.md)
 > Design system: **[`docs/design.md`](design.md) + [`docs/tokens.json`](tokens.json)**
