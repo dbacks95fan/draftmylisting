@@ -1,6 +1,6 @@
 # Implementation Plan: DraftMyListing
 
-> Status: Draft · Last updated: 2026-11-27
+> Status: Approved by Sobe 2026-11-27 · Last updated: 2026-11-27
 > Inputs (all found): [`docs/srs.md`](srs.md) v1.0 ·
 > [`docs/use-cases.md`](use-cases.md) · [`docs/architecture.md`](architecture.md) ·
 > [`docs/ux-foundations.md`](ux-foundations.md)
