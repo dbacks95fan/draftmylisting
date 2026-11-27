@@ -54,7 +54,9 @@ Confirmed by Sobe 2026-11-26.
   shipping, returns, sales reporting.
 - Other marketplaces (for example Facebook Marketplace or Mercari).
 - More than one eBay account, or users outside the household.
-- A web page or app of DraftMyListing's own.
+- A web page or app of DraftMyListing's own. Exception: if photos cannot be
+  passed from the chat to DraftMyListing, a one-time photo upload link is
+  acceptable (TBD-006).
 - Fixed-price (Buy It Now only) listings. Every listing is an auction.
 - Drafting several listings in one request. A member lists one item at a
   time (Sobe, 2026-11-26).
@@ -292,3 +294,4 @@ _Pending (Phase 4)._
 | TBD-003 | Listing format. Scope (1.2) first said fixed price only. **Decided (Sobe, 2026-11-26): every listing is an auction**; fixed-price-only listings are out. Scope updated. | 2026-11-26 | Resolved 2026-11-26 |
 | TBD-004 | Auctions were not tested in the PoC, which used fixed-price listings only. Unproven: that the GraphQL `createListing` API creates a **scheduled** auction, validates it, and lets it be edited and safely cancelled, and what scheduling an auction, and a 10-day duration, cost. Retire during architecture or construction, before relying on auctions. | 2026-11-26 | Open |
 | TBD-005 | Buy It Now price. Sobe (2026-11-26): the fixed price is 20% above the minimum auction price. eBay requires an auction's Buy It Now price to be **at least 30%** above its starting price (eBay help, checked 2026-11-26), so 20% above the starting price would be rejected. **Decided (Sobe, 2026-11-26):** sold comparables set the starting price; Buy It Now is 30% above it; no reserve. Specified in FR-PRICE-014..017. | 2026-11-26 | Resolved 2026-11-26 |
+| TBD-006 | **Photo path from chat to DraftMyListing (high risk).** The PoC uploaded photos from disk and tested assistants with text only. Unproven: that Claude and ChatGPT can pass the member's chat photos, at full quality, to a DraftMyListing tool. **Fallbacks accepted by Sobe (2026-11-27):** a one-time upload link the assistant gives the member, or the member adds photos on eBay directly. Caveat: eBay rejected a listing with too few images (`LSTNG_IMAGE_URLS_TOO_LOW`, PoC question 2), so adding photos only on eBay may require the listing to carry at least one photo first. Test before design is settled. | 2026-11-27 | Open |
