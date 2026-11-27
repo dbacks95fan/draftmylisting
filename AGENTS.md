@@ -28,6 +28,7 @@ auction under fixed safety rules. Read these before changing behavior:
 | `npm start` | Run the server (needs the settings in `.env.example`) |
 | `npm run dml -- health` | Admin health check against a running server |
 | `bash scripts/tests/test-install-on-nas.sh` | Tests the NAS install script with stub docker and curl |
+| `pwsh -File scripts/tests/check-powershell.ps1` | Lints and format-checks the PowerShell scripts (PSScriptAnalyzer) and tests the deploy helpers |
 | `.\scripts\deploy-synology.ps1 -NasHost …` | Deploy to the NAS (from Windows; needs Sobe's go-ahead) |
 
 Node 24 runs the `.ts` files directly; there is no build step.
