@@ -376,6 +376,20 @@ non-functional matter (section 4, observability).
 | FR-AUDIT-001 | The system shall not offer an activity history of listings, sign-ins or admin actions. | Must | Sobe, 2026-11-27. |
 | FR-AUDIT-002 | When a draft is deleted, the system shall delete every record it holds about that draft and its listing. | Must | Applies to FR-PHOTO-012 and FR-PHOTO-014. eBay keeps its own records. |
 
+### 3.13 Errors and limits (FR-ERR)
+
+Confirmed by Sobe 2026-11-27.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-ERR-001 | If an eBay request fails with a temporary error, then the system shall retry it up to 3 times, waiting longer before each retry, before reporting the failure. | Must | Used by FR-PHOTO-009 and FR-SCHED-010. |
+| FR-ERR-002 | When the system reports a failure to a member, the system shall say in plain words what went wrong and what the member can do next, without exposing keys, tokens or passwords. | Must | Never a bare error code. |
+| FR-ERR-003 | If a step of creating a listing fails after earlier steps succeeded, then the system shall keep the draft and the completed steps so that a retry continues from the failed step without duplicating anything. | Must | For example photos uploaded but listing not created. FR-SCHED-011 prevents duplicate listings. |
+| FR-ERR-004 | If an unexpected fault occurs, then the system shall tell the member that something went wrong, keep the draft, and log enough detail for the admin to diagnose it. | Must | Log contents and retention: section 4 (observability). |
+| FR-ERR-005 | If eBay reports that the application has reached an eBay call limit, then the system shall tell the member to try again later and when the limit resets, if eBay says. | Must | |
+| FR-ERR-006 | If one assistant connection sends more than 60 requests in a minute, then the system shall refuse its further requests for the rest of that minute. | Must | Catches an assistant stuck in a loop. |
+| FR-ERR-007 | If 20 listings have already been created on the current day (US Eastern time), then the system shall refuse to create another listing that day and tell the member the daily limit was reached. | Must | Sobe: 20 a day. Cancelled listings still count. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
