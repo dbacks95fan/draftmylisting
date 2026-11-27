@@ -277,6 +277,21 @@ DraftMyListing and can only be changed directly on eBay.
 | FR-LIST-012 | If a member asks to change or cancel a listing that is live, then the system shall tell the member that live listings can only be changed on eBay directly. | Must | Sobe, 2026-11-27. |
 | FR-LIST-013 | While a listing is live, the system shall not send any change or cancel request for it to eBay. | Must | Guard that holds even if the assistant asks. |
 
+### 3.7 Assistant connection (FR-ASST)
+
+Confirmed by Sobe 2026-11-27. Approach (Sobe): validate each assistant path as
+it is built, and decide alternatives when a path fails. Members may use
+either assistant.
+
+| ID | Requirement | Priority | Notes |
+|---|---|---|---|
+| FR-ASST-001 | The system shall provide all of its features to members using Claude on the web, the desktop app and the phone app. | Must | Web and phone proven (PoC question 8). |
+| FR-ASST-002 | The system shall provide all of its features to members using ChatGPT on the web and the phone app. | Must | Untested: TBD-001. |
+| FR-ASST-003 | The system shall offer the same features through both assistants. | Must | A member may use either one. |
+| FR-ASST-004 | When a member sends photos in the chat for a draft, the system shall receive each photo at its original quality. | Must | Unproven: TBD-006, with accepted fallbacks. |
+| FR-ASST-005 | When a member asks for something the system can do but leaves out a detail the system needs, the system shall direct the assistant to ask the member for that detail instead of declining. | Must | PoC question 8: Claude declined over a missing price. |
+| FR-ASST-006 | The system shall describe each of its tools in everyday terms that match how members ask for things. | Must | Tool descriptions steer whether the assistant uses a tool (PoC). Verified with sample member requests. |
+
 ## 4. Non-functional requirements
 
 _Pending (Phase 3)._
@@ -289,7 +304,7 @@ _Pending (Phase 4)._
 
 | ID | Question or risk | Raised | Status |
 |---|---|---|---|
-| TBD-001 | ChatGPT custom MCP connector support, especially in its phone app, is untested (PoC question 8). It is a stated must-have. | 2026-11-22 (PoC) | Open |
+| TBD-001 | ChatGPT custom MCP connector support, especially in its phone app, is untested (PoC question 8). It is a stated must-have. Sobe (2026-11-27): validate during the build; members may use either assistant, so a ChatGPT gap on one device can be covered by Claude there. | 2026-11-22 (PoC) | Open |
 | TBD-002 | Source of **sold**-item prices. Sobe (2026-11-26): the price comes from the assistant's research on similar items that have **sold**. eBay's sold-price API (Marketplace Insights) is limited release and granted per application. Checked 2026-11-26: neither the production keyset's Authorization Code scopes nor its Client Credentials scopes (only `api_scope` and `commerce.feedback.readonly`) include `buy.marketplace.insights`, matching the PoC's `invalid_scope` (question 7). **Decided (Sobe, 2026-11-26):** sold comparables from whatever the assistant can reach, with a clearly labeled fallback to for-sale prices (eBay Browse) when sold data is not enough; Sobe applies to eBay for Marketplace Insights access separately. Specified in FR-PRICE. | 2026-11-26 | Resolved 2026-11-26 |
 | TBD-003 | Listing format. Scope (1.2) first said fixed price only. **Decided (Sobe, 2026-11-26): every listing is an auction**; fixed-price-only listings are out. Scope updated. | 2026-11-26 | Resolved 2026-11-26 |
 | TBD-004 | Auctions were not tested in the PoC, which used fixed-price listings only. Unproven: that the GraphQL `createListing` API creates a **scheduled** auction, validates it, and lets it be edited and safely cancelled, and what scheduling an auction, and a 10-day duration, cost. Retire during architecture or construction, before relying on auctions. | 2026-11-26 | Open |
