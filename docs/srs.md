@@ -105,7 +105,7 @@ Confirmed by Sobe 2026-11-26.
 
 | ID | Goal | Success metric |
 |---|---|---|
-| G-1 | **Least possible effort per listing.** Ideally a member only takes a few photos and answers a few clarifying questions; the assistant works out the rest from the photos. The less the member has to do, the better. **Guiding rule (Sobe, 2026-11-26):** the assistant fills in as much of the listing as it can. A member filling in or fixing a few fields afterwards (for example the price) is acceptable; the time saved comes from everything else being done. | A member spends about **5 minutes** of their own time from first photo to a scheduled, complete listing. |
+| G-1 | **Least possible effort per listing.** Ideally a member only takes a few photos and answers a few clarifying questions; the assistant works out the rest from the photos. The less the member has to do, the better. **Guiding rule (Sobe, 2026-11-26/27):** the assistant gets everything it can from the photos and fills in as much of the listing as it can; the member is asked only for what the photos can't show (FR-DRAFT-018), plus the condition check and the done-with-draft question. A member filling in or fixing a few fields afterwards (for example the price) is acceptable; the time saved comes from everything else being done. | A member spends about **5 minutes** of their own time from first photo to a scheduled, complete listing. |
 | G-2 | **Listings eBay accepts the first time.** | At least **95%** of listings pass eBay's validation on the first attempt, with every required item specific filled. |
 | G-3 | **Nothing goes live by surprise.** | **Zero** listings start without the full 24-hour review window, including through a cancel (the PoC's cancel started a listing early: question 4). |
 | G-4 | **Realistic prices.** The price comes from the assistant's research on similar items that have **sold**. | Every suggested price cites the sold comparables it is based on. Source of sold data: TBD-002. |
@@ -182,6 +182,7 @@ Confirmed by Sobe 2026-11-26. One item per listing, one listing at a time.
 | FR-DRAFT-015 | If the system cannot identify the item from the photos, then the system shall ask the member for the brand or model, or for a clearer photo of a label. | Must | |
 | FR-DRAFT-016 | If the photos show more than one item, then the system shall ask the member whether to list them together as one lot or to list one of them. | Must | One listing at a time either way. |
 | FR-DRAFT-017 | If the item appears to be prohibited or restricted on eBay, then the system shall tell the member why and shall not create a listing for it. | Must | For example alcohol, weapons, recalled goods. |
+| FR-DRAFT-018 | When drafting a listing, the system shall ask the member only for information it cannot determine from the photos, the note or earlier answers, apart from confirming the condition (FR-DRAFT-007) and whether the member is done with the draft (FR-PHOTO-011). | Must | Sobe, 2026-11-27: photos first; ask only what the photos can't show. Those two questions are kept on purpose. |
 
 ### 3.2 Pricing and auction terms (FR-PRICE)
 

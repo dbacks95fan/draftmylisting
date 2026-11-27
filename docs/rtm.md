@@ -26,6 +26,7 @@
 | FR-DRAFT-015 | Sobe interview 2026-11-26 | UC-01 | | | Proposed |
 | FR-DRAFT-016 | Sobe interview 2026-11-26 | UC-01 | | | Proposed |
 | FR-DRAFT-017 | Sobe interview 2026-11-26 | UC-01 | | | Proposed |
+| FR-DRAFT-018 | Sobe interview 2026-11-27 | UC-01 | | | Proposed |
 | FR-PRICE-001 | Sobe interview 2026-11-26 | UC-01 | | | Proposed |
 | FR-PRICE-002 | Sobe interview 2026-11-26 | UC-01 | | | Proposed |
 | FR-PRICE-003 | Sobe interview 2026-11-26 | UC-01 | | | Proposed |

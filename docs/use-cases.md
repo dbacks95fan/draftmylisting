@@ -114,7 +114,7 @@ flowchart LR
     so.
   - Any step: eBay connection expired or revoked: the system stops, keeps the
     draft, and says the eBay connection needs reconnecting.
-- **Traces to:** FR-DRAFT-001..017, FR-PRICE-001..018, FR-PHOTO-001..010,
+- **Traces to:** FR-DRAFT-001..018, FR-PRICE-001..018, FR-PHOTO-001..010,
   FR-TERMS-002..010, FR-SCHED-001..011, FR-ASST-004..006, FR-ERR-001..005,
   FR-ERR-007, FR-EBAY-009.
 
