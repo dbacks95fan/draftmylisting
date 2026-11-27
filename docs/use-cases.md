@@ -1,6 +1,6 @@
 # DraftMyListing — Use Cases
 
-> Version: 0.1 (draft) · Derived from [`docs/srs.md`](srs.md) · 2026-11-27
+> Version: 1.0 (approved with SRS 1.0) · Derived from [`docs/srs.md`](srs.md) · 2026-11-27
 >
 > Use-case-centric; no user stories. "Member" means anyone in the household
 > using the shared sign-in. "The system" is DraftMyListing together with the

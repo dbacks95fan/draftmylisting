@@ -1,6 +1,6 @@
 # DraftMyListing — Software Requirements Specification
 
-> Version: 0.1 (draft, in progress) · Requirement syntax: EARS ·
+> Version: 1.0 (approved by Sobe 2026-11-27) · Requirement syntax: EARS ·
 > Owner: Sobe · Started: 2026-11-26
 >
 > Lineage: ISO/IEC/IEEE 29148. This document is the source of truth for the
@@ -12,6 +12,7 @@
 | Version | Date | Change | IDs affected |
 |---|---|---|---|
 | 0.1 | 2026-11-26 | Skeleton created | — |
+| 1.0 | 2026-11-27 | Interview complete; approved by Sobe. 128 active FRs, 2 withdrawn, 21 NFRs, external interfaces | All |
 
 ## 1. Introduction
 
@@ -157,7 +158,8 @@ photos and chatting with their assistant, because the admin does all setup.
 ## 3. Functional requirements
 
 Each requirement has a stable ID that is never reused. Priority is MoSCoW
-(Must, Should, Could, Won't). Status is `Proposed` until the SRS is finalized.
+(Must, Should, Could, Won't). Status (in `docs/rtm.md`) is `Approved` as of
+version 1.0; withdrawn IDs are kept and never reused.
 
 ### 3.1 Drafting from photos (FR-DRAFT)
 
