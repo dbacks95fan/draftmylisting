@@ -45,7 +45,8 @@ Confirmed by Sobe 2026-11-26.
   TBD-003, TBD-005).
 - Validating the listing with eBay, then scheduling it 24 hours out.
 - Reviewing, editing and safely cancelling a scheduled listing.
-- Use from Claude and ChatGPT, on phone and PC, with one sign-in per member.
+- Use from Claude and ChatGPT, on phone and PC, through one shared household
+  sign-in.
 - Hosting on the household's NAS.
 
 **Out of scope (first version):**
@@ -67,7 +68,7 @@ Confirmed by Sobe 2026-11-26.
 |---|---|
 | The system | DraftMyListing together with the assistant behavior its tools direct. Requirements about what "the system" asks or tells a member are met through the assistant, steered by DraftMyListing's tools and their descriptions. |
 | Assistant | The member's AI chat assistant: Claude or ChatGPT. |
-| Member | A household member (SRS 2.3). |
+| Member | Anyone in the household using DraftMyListing through the shared household sign-in. The system does not tell members apart (SRS 2.3). |
 | Draft | A listing being prepared that eBay has not yet scheduled. |
 | Scheduled listing | A listing eBay holds with a future start time (`SCHEDULED`); not visible to buyers. |
 | Review window | The time between scheduling and eBay starting the listing: at least 24 hours, and up to about 48 hours because the start is moved so the auction ends at 10 p.m. Eastern (FR-SCHED-004). |
@@ -108,16 +109,19 @@ Confirmed by Sobe 2026-11-26.
 | G-2 | **Listings eBay accepts the first time.** | At least **95%** of listings pass eBay's validation on the first attempt, with every required item specific filled. |
 | G-3 | **Nothing goes live by surprise.** | **Zero** listings start without the full 24-hour review window, including through a cancel (the PoC's cancel started a listing early: question 4). |
 | G-4 | **Realistic prices.** The price comes from the assistant's research on similar items that have **sold**. | Every suggested price cites the sold comparables it is based on. Source of sold data: TBD-002. |
-| G-5 | **Anyone in the household can use it** from their own phone or PC. | One sign-in per member; works from phone and PC in each supported assistant. |
+| G-5 | **Anyone in the household can use it** from their own phone or PC. | One shared household sign-in; works from phone and PC in each supported assistant. |
 
 ### 2.3 Stakeholders and user classes
 
-Confirmed by Sobe 2026-11-26. About **3** household members in all.
+Confirmed by Sobe 2026-11-26; revised 2026-11-27. About **3** household
+members in all. **Single-user model (Sobe, 2026-11-27):** one eBay account and
+one shared household sign-in. Anyone in the household adds the connector and
+signs in to the same account; there are no individual user accounts.
 
 | User class | Who | What they do |
 |---|---|---|
-| Household member | Any family member who sells | Takes photos, answers the assistant's clarifying questions, and creates any listings they want; reviews, edits and cancels listings. All members share the one eBay seller account. Whether a member may edit or cancel another member's listing is confirmed in the authorization area. |
-| Household admin | Sobe | Everything a member does, plus setup: sets up each member's device and access, connects the eBay account, adds and removes members, and handles problems. Members do not set themselves up. |
+| Household user | Anyone in the family who sells, about 3 people | Adds the DraftMyListing connector to their assistant and signs in with the **shared household sign-in**. Takes photos, answers clarifying questions, creates any listings they want, and reviews, edits and cancels listings. Everyone uses the one eBay seller account. The system does not identify individual people (Sobe, 2026-11-27). |
+| Household admin | Sobe | Sets up devices and the shared sign-in, connects the eBay account, sets household settings, and handles problems. An operator role, not a separate login. |
 | Buyer | eBay shoppers | Never use DraftMyListing; see only the finished listing on eBay. |
 
 Implication for UX and setup: members need no technical skill beyond taking
@@ -263,11 +267,11 @@ DraftMyListing and can only be changed directly on eBay.
 
 | ID | Requirement | Priority | Notes |
 |---|---|---|---|
-| FR-LIST-001 | When a member asks for the household's scheduled listings, the system shall show every scheduled listing on the household's eBay account with its title, starting price, Buy It Now price, creating member, and start and end times. | Must | Listings created outside DraftMyListing show no creating member. Creator record: FR-AUDIT. |
+| FR-LIST-001 | When a member asks for the household's scheduled listings, the system shall show every scheduled listing on the household's eBay account with its title, starting price, Buy It Now price, and start and end times. | Must | Revised 2026-11-27: no creating member (single-user model). |
 | FR-LIST-002 | When a member asks to see a scheduled listing, the system shall read its current details from eBay and show them. | Must | Includes Seller Hub edits (PoC question 4). |
 | FR-LIST-003 | When a member asks to change a scheduled listing's title, description, prices, item specifics, condition, or package size and weight, the system shall update the listing on eBay and keep its listing ID. | Must | `updateListing` keeps the ID (PoC question 5). Price rules: FR-PRICE-010, 015, 016. |
 | FR-LIST-004 | When a member asks to add, remove or reorder a scheduled listing's photos, the system shall update the listing's photos on eBay, keeping at most 12. | Must | Photo rules: FR-PHOTO. |
-| FR-LIST-005 | The system shall let any member view, change or cancel any scheduled listing on the household's account, whichever member created it. | Must | Sobe: yes, though unlikely to happen. |
+| FR-LIST-005 | ~~The system shall let any member view, change or cancel any scheduled listing, whichever member created it.~~ | — | **Withdrawn 2026-11-27:** single-user model, so there is no per-member ownership. ID retired, not reused. |
 | FR-LIST-006 | When a member asks to cancel a scheduled listing, the system shall ask the member to confirm the cancel before doing it. | Must | Sobe, 2026-11-27. A cancel cannot be undone. |
 | FR-LIST-007 | When a member confirms a cancel, the system shall remove the scheduled listing from eBay without the listing ever becoming visible to buyers. | Must | G-3. The PoC showed removing the schedule starts the listing; a safe method must be proven in construction (PoC question 4). |
 | FR-LIST-008 | When a cancel has completed, the system shall confirm from eBay that the listing is removed and never went live, and tell the member. | Must | |
@@ -294,23 +298,24 @@ either assistant.
 
 ### 3.8 Member sign-in (FR-AUTH)
 
-Confirmed by Sobe 2026-11-27. Builds on the PoC's household sign-in
-(`src/mcp/household-auth.ts`). No self sign-up and no two-step sign-in.
+Confirmed by Sobe 2026-11-27; revised the same day for the single-user model
+(one shared household password, no member names). Builds on the PoC's
+household sign-in (`src/mcp/household-auth.ts`). No two-step sign-in.
 
 | ID | Requirement | Priority | Notes |
 |---|---|---|---|
-| FR-AUTH-001 | When a member's assistant connects to the system for the first time, the system shall show the household sign-in page and ask for the member's name and password. | Must | One sign-in per member per assistant (G-5). |
-| FR-AUTH-002 | When a member signs in with a correct name and password, the system shall grant that member's assistant access to the system. | Must | |
+| FR-AUTH-001 | When an assistant connects to the system for the first time, the system shall show the household sign-in page and ask for the shared household password. | Must | Revised 2026-11-27: one shared sign-in, no member names. Once per assistant per device account (G-5). |
+| FR-AUTH-002 | When the correct household password is entered, the system shall grant that assistant access to the system. | Must | |
 | FR-AUTH-003 | If a request reaches the system without a valid sign-in, then the system shall refuse it without performing any action. | Must | HTTP 401 (PoC question 8, stage 2). |
 | FR-AUTH-004 | While a member uses the system at least once every 30 days, the system shall keep that member signed in. | Must | Sobe: 30 days is right. PoC: 1-hour passes renewed by a 30-day rotating refresh. |
 | FR-AUTH-005 | If a member has not used the system for more than 30 days, then the system shall require the member to sign in again. | Must | |
 | FR-AUTH-006 | If a member's sign-in has expired, then the system shall direct the assistant to tell the member to reconnect, instead of reporting an error. | Must | |
-| FR-AUTH-007 | When the household admin sets a member's password, the system shall require it to be at least 12 characters. | Must | PoC minimum. |
+| FR-AUTH-007 | When the household admin sets the household password, the system shall require it to be at least 12 characters. | Must | PoC minimum. |
 | FR-AUTH-008 | The system shall store members' passwords only in hashed form. | Must | The PoC kept them readable in a settings file; acceptable for the test only. |
 | FR-AUTH-009 | If 5 wrong passwords are entered on one sign-in page, then the system shall stop accepting sign-ins on that page and tell the member to connect again from the assistant. | Must | PoC behavior. |
-| FR-AUTH-010 | If 10 wrong passwords are entered for the same member name within 15 minutes, then the system shall refuse sign-ins for that name for 15 minutes. | Must | Guessing protection from the internet. |
-| FR-AUTH-011 | When the system performs an action, the system shall record which member requested it. | Must | Feeds FR-AUDIT. |
-| FR-AUTH-012 | The system shall not offer self sign-up, password reset by email, or two-step sign-in. | Must | Sobe: the admin creates members and resets passwords (FR-ADMIN); no two-step. |
+| FR-AUTH-010 | If 10 wrong passwords are entered across all sign-in pages within 15 minutes, then the system shall refuse all sign-ins for 15 minutes. | Must | Revised 2026-11-27: no member names, so the limit is household-wide. Guessing protection from the internet. |
+| FR-AUTH-011 | When the system performs an action, the system shall record which assistant connection requested it. | Must | Revised 2026-11-27: no individual users; the connection (assistant and sign-in) is what can be told apart. Feeds FR-AUDIT. |
+| FR-AUTH-012 | The system shall not offer individual user accounts, self sign-up, password reset by email, or two-step sign-in. | Must | Sobe: single shared sign-in; the admin sets the password (FR-ADMIN); no two-step. |
 
 ## 4. Non-functional requirements
 
