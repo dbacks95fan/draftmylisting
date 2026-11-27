@@ -46,15 +46,15 @@ Values come from `tokens.json`; the CSS below is the same set.
   --color-warning: #8A5A00;
   --color-danger: #B42318;
   --color-focus: #1F5FBF;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-size-sm: 14px;
   --font-size-md: 16px;
   --font-size-lg: 20px;
   --font-size-xl: 24px;
   --font-weight-regular: 400;
   --font-weight-semibold: 600;
-  --line-height-body: 1.5;
-  --line-height-heading: 1.25;
+  --font-line-height-body: 1.5;
+  --font-line-height-heading: 1.25;
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 16px;
@@ -90,7 +90,7 @@ border on bg 3.2 / 3.8 (non-text, needs 3.0). All pass AA.
 
 ### Typography
 
-One family, `--font-sans` (the device's system font; no web font download).
+One family, `--font-family-sans` (the device's system font; no web font download).
 
 | Step | Size | Line height | Weight | Usage |
 | :--- | :--- | :--- | :--- | :--- |
@@ -183,7 +183,7 @@ short, friendly, no jargon.
 - Primary action → `button-primary`, full width, 48px.
 - Input → `input-text`, label above, error below in `--color-danger`.
 - Result or error → `alert` (success, warning, danger).
-- Font: `--font-sans`, body 16px / 1.5. Spacing: 8 / 16 / 24.
+- Font: `--font-family-sans`, body 16px / 1.5. Spacing: 8 / 16 / 24.
 - Dark mode is automatic via `prefers-color-scheme`.
 
 ## 9. Provenance and known gaps

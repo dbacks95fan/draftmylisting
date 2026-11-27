@@ -14,8 +14,11 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node --test \"src/**/*.test.ts\"",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm test"
+    "test": "node --test \"src/**/*.test.ts\" \"test/**/*.test.ts\"",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm test",
+    "start": "node src/server.ts",
+    "dml": "node src/cli/dml.ts",
+    "coverage": "node --test --experimental-test-coverage \"src/**/*.test.ts\" \"test/**/*.test.ts\""
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

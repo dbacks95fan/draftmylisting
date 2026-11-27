@@ -21,7 +21,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { resolveEbayConfig } from "../../src/ebay/config.ts";
 import { loadEnvFile } from "../../src/ebay/env-file.ts";
-import { HouseholdAuthProvider } from "../../src/mcp/household-auth.ts";
+import { HouseholdAuthProvider } from "../../src/auth/household-auth.ts";
 import {
   createValidateListing,
   VALIDATE_LISTING_TOOL,

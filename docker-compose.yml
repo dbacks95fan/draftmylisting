@@ -1,0 +1,26 @@
+# Copyright (c) 2026 DPSystems, LLC.
+# Runs DraftMyListing on the Synology NAS (architecture section 7) with
+# standalone docker-compose 1.28. Host networking with loopback listeners,
+# like job-agent: DSM's reverse proxy is the only way in from outside.
+# Written, not yet deployed.
+#
+# Set on the NAS before `docker-compose up -d --build`:
+#   DRAFTMYLISTING_DATA_HOST_DIR  folder on /volume2 for the database and logs
+#   DRAFTMYLISTING_ENV_HOST_FILE  settings file: public URL, household
+#                                 password and eBay keys
+---
+version: "3.8"
+
+services:
+  draftmylisting:
+    build: .
+    image: draftmylisting:local
+    container_name: draftmylisting
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      DRAFTMYLISTING_ENV_FILE: /config/runtime.env
+      DRAFTMYLISTING_DATA_DIR: /data
+    volumes:
+      - ${DRAFTMYLISTING_DATA_HOST_DIR:?required}:/data
+      - ${DRAFTMYLISTING_ENV_HOST_FILE:?required}:/config/runtime.env:ro

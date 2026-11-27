@@ -1,0 +1,12 @@
+# Copyright (c) 2026 DPSystems, LLC.
+# Keeps the image to what the server needs, and keeps secrets and local data out of it.
+
+.git
+node_modules
+.env
+.env.*
+spikes
+test
+**/*.test.ts
+docs/*.md
+docs/poc

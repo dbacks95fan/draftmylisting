@@ -1,0 +1,4 @@
+#!/bin/sh
+# Copyright (c) 2026 DPSystems, LLC.
+# Runs the DraftMyListing admin CLI inside the container: docker exec draftmylisting dml health
+exec node /app/src/cli/dml.ts "$@"
