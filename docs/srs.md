@@ -433,7 +433,48 @@ Confirmed by Sobe 2026-11-27. Each states a metric, target and condition.
 
 ## 5. External interface requirements
 
-_Pending (Phase 4)._
+Confirmed by Sobe 2026-11-27. Requirements level only; contracts are designed
+downstream.
+
+### 5.1 User interfaces
+
+| ID | Interface | Requirement |
+|---|---|---|
+| EIR-UI-001 | Assistant chat | All member interaction happens in the Claude or ChatGPT conversation. DraftMyListing has no app of its own. |
+| EIR-UI-002 | Household sign-in page | A web page, usable on a phone, that asks for the shared household password (FR-AUTH-001). |
+| EIR-UI-003 | eBay return page | The page eBay returns the admin to; it states whether the eBay connection succeeded and, if not, why (FR-EBAY-002, FR-EBAY-010). |
+| EIR-UI-004 | Photo upload page | Only if photos cannot pass from the chat (TBD-006): a one-time link that lets a member pick photos from their phone or PC. |
+
+### 5.2 Hardware interfaces
+
+| ID | Interface | Requirement |
+|---|---|---|
+| EIR-HW-001 | Synology NAS | Hosts the service in Docker (NFR-PORT-001). |
+| EIR-HW-002 | Members' phones and PCs | Take and supply photos through the assistant; no device-specific software beyond the assistant. |
+
+### 5.3 Software interfaces
+
+| ID | System | Used for | Access |
+|---|---|---|---|
+| EIR-SW-001 | eBay GraphQL Listing API | Validate, create, update and read scheduled listings | User token, `sell.listing`, `sell.listing.read` (PoC questions 2, 3, 5) |
+| EIR-SW-002 | eBay Media API | Upload photos | User token, `sell.inventory` (PoC question 6) |
+| EIR-SW-003 | eBay Taxonomy API | Category suggestions; required and recommended item specifics | Application token (PoC question 7) |
+| EIR-SW-004 | eBay Browse API | Items currently for sale (pricing fallback) | Application token (PoC question 7) |
+| EIR-SW-005 | eBay Account API | Read shipping, return and payment business policies | User token, `sell.account.readonly` |
+| EIR-SW-006 | eBay Identity API | Read the connected eBay username (FR-EBAY-004) | User token, `commerce.identity.readonly` (in the production scope list, 2026-11-26) |
+| EIR-SW-007 | eBay Marketplace Insights API | Sold-item data, only if eBay grants access (FR-PRICE-004) | Application token, `buy.marketplace.insights` (not granted) |
+| EIR-SW-008 | eBay cancel of a scheduled listing | Safe cancel (FR-LIST-007) | Method to be proven in construction (PoC question 4) |
+| EIR-SW-009 | eBay OAuth | Seller account connection and application tokens | Authorization code flow with RuName; client credentials (PoC) |
+| EIR-SW-010 | Claude and ChatGPT | Members' assistants; call DraftMyListing's tools | MCP over HTTPS with OAuth sign-in (PoC question 8) |
+| EIR-SW-011 | Assistants' web search | Sold-price research (FR-PRICE-005) | Assistant feature, turned on at setup (A-1) |
+
+### 5.4 Communications interfaces
+
+| ID | Interface | Requirement |
+|---|---|---|
+| EIR-COM-001 | MCP | Streamable HTTP over HTTPS at a public address, since both assistants call from their own cloud (PoC question 8). |
+| EIR-COM-002 | Assistant sign-in | OAuth with dynamic client registration and PKCE, as built in the PoC (`src/mcp/household-auth.ts`). |
+| EIR-COM-003 | eBay | HTTPS to eBay's production API hosts. |
 
 ## 6. Open questions and risks
 
