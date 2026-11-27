@@ -1,6 +1,7 @@
 # Architecture: DraftMyListing
 
-> Status: Draft · Last updated: 2026-11-27 · Author: Claude, with Sobe
+> Status: Approved by Sobe 2026-11-27 (ADR-008 stays Proposed until spike R-2) ·
+> Last updated: 2026-11-27 · Author: Claude, with Sobe
 >
 > Requirements: [`docs/srs.md`](srs.md) v1.0 (source of truth) and
 > [`docs/use-cases.md`](use-cases.md). Feasibility evidence:
